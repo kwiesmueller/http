@@ -3,13 +3,14 @@ package main
 import (
 	"bufio"
 	"errors"
-	"github.com/bborbe/io/file_writer"
-	"github.com/bborbe/log"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/bborbe/io/file_writer"
+	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
