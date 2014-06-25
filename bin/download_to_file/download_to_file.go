@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
+	"regexp"
 )
 
 var logger = log.DefaultLogger
@@ -57,11 +57,11 @@ func downloadLink(url string) error {
 		logger.Debugf("%s", string(content))
 		return errors.New(string(content))
 	}
-	pos := strings.LastIndex(url, "/")
-	filename := url[pos+1:]
+	filename := createFilename(url)
 	logger.Debugf("to %s", filename)
 	writer, err := file_writer.NewFileWriter(filename)
 	if err != nil {
+		logger.Errorf("open '%s' failed", filename)
 		return err
 	}
 	io.Copy(writer, response.Body)
@@ -69,4 +69,9 @@ func downloadLink(url string) error {
 	writer.Close()
 	logger.Debugf("download %s finished", url)
 	return nil
+}
+
+func createFilename(url string) string {
+	re := regexp.MustCompile("[^A-Za-z0-9\\.]+")
+	return re.ReplaceAllString(url,"_")
 }

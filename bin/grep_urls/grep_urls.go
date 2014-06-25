@@ -25,7 +25,7 @@ func main() {
 func grepUrls() error {
 	contentBuffer := bytes.NewBuffer(nil)
 	io.Copy(contentBuffer, os.Stdin)
-	re := regexp.MustCompile("(https?://[^,'\" ]+)")
+	re := regexp.MustCompile("(https?://[^,'\" \\?&;]+)")
 	result := re.FindAll(contentBuffer.Bytes(), -1)
 	for _, match := range result {
 		os.Stdout.Write(match)
