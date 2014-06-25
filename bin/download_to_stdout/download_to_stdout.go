@@ -7,9 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
-
-	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 )
 
@@ -18,7 +15,7 @@ var logger = log.DefaultLogger
 const SIZE = 10
 
 func main() {
-	logger.SetLevelThreshold(log.DEBUG)
+	logger.SetLevelThreshold(log.ERROR)
 	defer logger.Close()
 	logger.Debug("started")
 	err := downloadLinks()
@@ -40,6 +37,7 @@ func downloadLinks() error {
 			return err
 		}
 	}
+	return nil
 }
 
 func downloadLink(url string) error {
@@ -56,16 +54,7 @@ func downloadLink(url string) error {
 		logger.Debugf("%s", string(content))
 		return errors.New(string(content))
 	}
-	pos := strings.LastIndex(url, "/")
-	filename := url[pos+1:]
-	logger.Debugf("to %s", filename)
-	writer, err := file_writer.NewFileWriter(filename)
-	if err != nil {
-		return err
-	}
-	io.Copy(writer, response.Body)
-	writer.Flush()
-	writer.Close()
+	io.Copy(os.Stdout, response.Body)
 	logger.Debugf("download %s finished", url)
 	return nil
 }
