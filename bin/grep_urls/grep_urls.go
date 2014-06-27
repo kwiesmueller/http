@@ -1,10 +1,12 @@
 package main
 
-import (    "io"
-	"os"
-	"github.com/bborbe/log"
+import (
 	"bytes"
+	"io"
+	"os"
 	"regexp"
+
+	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
@@ -33,4 +35,3 @@ func grepUrls() error {
 	}
 	return nil
 }
-

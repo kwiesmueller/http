@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"os"
 
+	"regexp"
+
 	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
-	"regexp"
 )
 
 var logger = log.DefaultLogger
@@ -73,5 +74,5 @@ func downloadLink(url string) error {
 
 func createFilename(url string) string {
 	re := regexp.MustCompile("[^A-Za-z0-9\\.]+")
-	return re.ReplaceAllString(url,"_")
+	return re.ReplaceAllString(url, "_")
 }
