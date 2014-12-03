@@ -49,7 +49,7 @@ func (d *downloader) Download(request *http.Request) (resp *http.Response, err e
 }
 
 func BuildRequestAndDownload(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
-	req, err := BuildRequest(method, url, make(http.Header), body)
+	req, err := BuildRequest(method, url, header, body)
 	if err != nil {
 		return nil, err
 	}
