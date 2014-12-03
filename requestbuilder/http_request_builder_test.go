@@ -1,9 +1,6 @@
 package requestbuilder
 
-import (
-	"io/ioutil"
-	"net/http"
-	"testing"
+import (    "testing"
 	. "github.com/bborbe/assert"
 )
 
@@ -16,26 +13,38 @@ func TestImplementsHttpRequestBuilder(t *testing.T) {
 	}
 }
 
-func TestGetResponse(t *testing.T) {
+func TestGetRequestWithHeader(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
-	r.AddParameter("a", "b")
-	response, err := r.GetResponse()
+	r.AddHeader("a", "b")
+	request, err := r.GetRequest()
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = AssertThat(response, NotNilValue())
+	err = AssertThat(request, NotNilValue())
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = AssertThat(response.StatusCode, Is(http.StatusOK))
+	err = AssertThat(len(request.Header), Is(1))
 	if err != nil {
 		t.Fatal(err)
 	}
-	content, err := ioutil.ReadAll(response.Body)
+	err = AssertThat(len(request.Header["a"]), Is(1))
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = AssertThat(len(content), Gt(0))
+	err = AssertThat(request.Header["a"][0], Is("b"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetRequest(t *testing.T) {
+	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
+	request, err := r.GetRequest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AssertThat(request, NotNilValue())
 	if err != nil {
 		t.Fatal(err)
 	}

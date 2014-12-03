@@ -5,7 +5,7 @@ import "net/http"
 type HttpRequestBuilder interface {
 	AddParameter(key string, value ...string)
 	AddHeader(key string, values ...string)
-	GetResponse() (*http.Response, error)
+	GetRequest() (*http.Request, error)
 }
 
 type httpRequestBuilder struct {
@@ -32,13 +32,13 @@ func (r *httpRequestBuilder) AddParameter(key string, values ...string) {
 	r.parameter[key] = values
 }
 
-func (r *httpRequestBuilder) GetResponse() (*http.Response, error) {
+func (r *httpRequestBuilder) GetRequest() (*http.Request, error) {
 	req, err := http.NewRequest(r.method, r.getUrlWithParameter(), nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header = r.header
-	return http.DefaultClient.Do(req)
+	return req, nil
 }
 
 func (r *httpRequestBuilder) getUrlWithParameter() string {

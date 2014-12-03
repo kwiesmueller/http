@@ -6,6 +6,10 @@ import (
 	"net/http"
 )
 
+type DownloaderRequest interface {
+	Download(request *http.Request) (resp *http.Response, err error)
+}
+
 type DownloaderGet interface {
 	Get(url string) (resp *http.Response, err error)
 }

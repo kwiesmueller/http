@@ -40,3 +40,12 @@ func TestImplementsDownloaderPostWithHeader(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestImplementsDownloaderRequest(t *testing.T) {
+	downloader := New()
+	var i *DownloaderRequest
+	err := AssertThat(downloader, Implements(i).Message("check type"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
