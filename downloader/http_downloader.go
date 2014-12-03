@@ -29,19 +29,31 @@ func New() *downloader {
 }
 
 func (d *downloader) Get(url string) (resp *http.Response, err error) {
-	return Download("GET", url, make(http.Header), nil)
+	return BuildRequestAndDownload("GET", url, make(http.Header), nil)
 }
 
 func (d *downloader) GetWithHeader(url string, header http.Header) (resp *http.Response, err error) {
-	return Download("GET", url, header, nil)
+	return BuildRequestAndDownload("GET", url, header, nil)
 }
 
 func (d *downloader) Post(url string, body io.Reader) (resp *http.Response, err error) {
-	return Download("POST", url, make(http.Header), body)
+	return BuildRequestAndDownload("POST", url, make(http.Header), body)
 }
 
 func (d *downloader) PostWithHeader(url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
-	return Download("POST", url, header, body)
+	return BuildRequestAndDownload("POST", url, header, body)
+}
+
+func (d *downloader) Download(request *http.Request) (resp *http.Response, err error) {
+	return Download(request)
+}
+
+func BuildRequestAndDownload(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
+	req, err := BuildRequest(method, url, make(http.Header), body)
+	if err != nil {
+		return nil, err
+	}
+	return Download(req)
 }
 
 func getClient() *http.Client {
@@ -52,7 +64,12 @@ func getClient() *http.Client {
 	return client
 }
 
-func Download(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
+func Download(request *http.Request) (resp *http.Response, err error) {
+	client := getClient()
+	return client.Do(request)
+}
+
+func BuildRequest(method string, url string, header http.Header, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
@@ -60,6 +77,5 @@ func Download(method string, url string, header http.Header, body io.Reader) (re
 	for key, value := range header {
 		req.Header[key] = value
 	}
-	client := getClient()
-	return client.Do(req)
+	return req, nil
 }
