@@ -1,6 +1,7 @@
 package requestbuilder
 
-import (    "testing"
+import (
+	"testing"
 	. "github.com/bborbe/assert"
 )
 
