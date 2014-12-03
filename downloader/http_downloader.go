@@ -6,23 +6,23 @@ import (
 	"net/http"
 )
 
-type DownloaderRequest interface {
+type RequestDownloader interface {
 	Download(request *http.Request) (resp *http.Response, err error)
 }
 
-type DownloaderGet interface {
+type GetDownloader interface {
 	Get(url string) (resp *http.Response, err error)
 }
 
-type DownloaderGetWithHeader interface {
+type GetWithHeaderDownloader interface {
 	GetWithHeader(url string, header http.Header) (resp *http.Response, err error)
 }
 
-type DownloaderPost interface {
+type PostDownloader interface {
 	Post(url string, body io.Reader) (resp *http.Response, err error)
 }
 
-type DownloaderPostWithHeader interface {
+type PostWithHeaderDownloader interface {
 	PostWithHeader(url string, header http.Header, body io.Reader) (resp *http.Response, err error)
 }
 
