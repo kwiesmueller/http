@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"io"
 	"os"
-	"regexp"
 
+	"github.com/bborbe/crawler/linkparser"
 	"github.com/bborbe/log"
 )
 
@@ -27,11 +27,13 @@ func main() {
 func grepUrls() error {
 	contentBuffer := bytes.NewBuffer(nil)
 	io.Copy(contentBuffer, os.Stdin)
-	re := regexp.MustCompile("(https?://[^,'\" \\?&;]+)")
-	result := re.FindAll(contentBuffer.Bytes(), -1)
-	for _, match := range result {
-		os.Stdout.Write(match)
+
+	l := linkparser.New()
+	links := l.Parse(string(contentBuffer.Bytes()))
+	for match := range links {
+		os.Stdout.WriteString(match)
 		os.Stdout.WriteString("\n")
 	}
+
 	return nil
 }
