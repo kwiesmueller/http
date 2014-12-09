@@ -1,21 +1,16 @@
 package http
 
-import "net/http"
+import (
+	"io/ioutil"
+	"net/http"
+)
 
-func ResponseToString(response *http.Response) string {
-	return string(ResponseToByteArray(response))
+func ResponseToString(response *http.Response) (string, error) {
+	content, err := ResponseToByteArray(response)
+	return string(content), err
 }
 
-func ResponseToByteArray(response *http.Response) []byte {
+func ResponseToByteArray(response *http.Response) ([]byte, error) {
 	body := response.Body
-	result := make([]byte, 0)
-	b := make([]byte, 8)
-	for {
-		n, err := body.Read(b)
-		if err != nil || n == 0 {
-			return result
-		}
-		result = append(result, b[:n]...)
-	}
-	return result
+	return ioutil.ReadAll(body)
 }
