@@ -3,7 +3,15 @@ package downloader
 import (
 	"crypto/tls"
 	"io"
+	"net"
 	"net/http"
+	"time"
+)
+
+const (
+	TIMEOUT             = 30 * time.Second
+	KEEPALIVE           = 30 * time.Second
+	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
 
 type RequestDownloader interface {
@@ -61,8 +69,15 @@ func BuildRequestAndDownload(method string, url string, header http.Header, body
 }
 
 func getClient() *http.Client {
+	dialFunc := (&net.Dialer{
+		Timeout:   TIMEOUT,
+		KeepAlive: KEEPALIVE,
+	}).Dial
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		Proxy:               http.ProxyFromEnvironment,
+		Dial:                dialFunc,
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
 	client := &http.Client{Transport: tr}
 	return client
