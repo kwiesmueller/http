@@ -2,6 +2,7 @@ package downloader
 
 import (
 	"testing"
+
 	. "github.com/bborbe/assert"
 )
 

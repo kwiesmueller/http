@@ -2,6 +2,7 @@ package requestbuilder
 
 import (
 	"testing"
+
 	. "github.com/bborbe/assert"
 )
 

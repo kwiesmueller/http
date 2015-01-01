@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"testing"
+
 	. "github.com/bborbe/assert"
 	io_mock "github.com/bborbe/io/mock"
 )

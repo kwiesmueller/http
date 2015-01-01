@@ -2,6 +2,7 @@ package mock
 
 import (
 	"testing"
+
 	. "github.com/bborbe/assert"
 	"github.com/bborbe/http/downloader"
 )
