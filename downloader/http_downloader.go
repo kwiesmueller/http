@@ -71,13 +71,13 @@ func BuildRequestAndDownload(method string, url string, header http.Header, body
 func getClient() *http.Client {
 	dialFunc := (&net.Dialer{
 		Timeout:   TIMEOUT,
-		KeepAlive: KEEPALIVE,
+//		KeepAlive: KEEPALIVE,
 	}).Dial
 	tr := &http.Transport{
 		Proxy:               http.ProxyFromEnvironment,
 		Dial:                dialFunc,
 		TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
-		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
+//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
 	client := &http.Client{Transport: tr}
 	return client
