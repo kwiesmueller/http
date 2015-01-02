@@ -5,34 +5,46 @@ import (
 	"io"
 	"os"
 
+	"flag"
+
 	"github.com/bborbe/crawler/linkparser"
+
+	"fmt"
+
 	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
 
-const SIZE = 10
+const (
+	PARAMETER_LOGLEVEL = "loglevel"
+)
 
 func main() {
-	logger.SetLevelThreshold(log.ERROR)
 	defer logger.Close()
-	logger.Debug("started")
-	err := grepUrls()
+	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, "one of OFF,TRACE,DEBUG,INFO,WARN,ERROR")
+	flag.Parse()
+	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
+	logger.Debugf("set log level to %s", *logLevelPtr)
+
+	writer := os.Stdout
+	input := os.Stdin
+	err := do(writer, input)
 	if err != nil {
 		logger.Fatal(err)
+		logger.Close()
+		os.Exit(1)
 	}
-	logger.Debug("finished")
 }
 
-func grepUrls() error {
+func do(writer io.Writer, input io.Reader) error {
 	contentBuffer := bytes.NewBuffer(nil)
-	io.Copy(contentBuffer, os.Stdin)
+	io.Copy(contentBuffer, input)
 
 	l := linkparser.New()
-	links := l.Parse(string(contentBuffer.Bytes()))
+	links := l.ParseAbsolute(string(contentBuffer.Bytes()))
 	for match := range links {
-		os.Stdout.WriteString(match)
-		os.Stdout.WriteString("\n")
+		fmt.Fprintf(writer, "%s\n", match)
 	}
 
 	return nil

@@ -8,32 +8,45 @@ import (
 	"net/http"
 	"os"
 
+	"flag"
+
 	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
 
-const SIZE = 10
+const (
+	PARAMETER_LOGLEVEL = "loglevel"
+)
 
 func main() {
-	logger.SetLevelThreshold(log.ERROR)
 	defer logger.Close()
-	logger.Debug("started")
-	err := downloadLinks()
+	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, "one of OFF,TRACE,DEBUG,INFO,WARN,ERROR")
+	flag.Parse()
+	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
+	logger.Debugf("set log level to %s", *logLevelPtr)
+
+	writer := os.Stdout
+	input := os.Stdin
+	err := do(writer, input)
 	if err != nil {
 		logger.Fatal(err)
+		logger.Close()
+		os.Exit(1)
 	}
-	logger.Debug("finished")
 }
 
-func downloadLinks() error {
-	reader := bufio.NewReader(os.Stdin)
+func do(writer io.Writer, input io.Reader) error {
+	reader := bufio.NewReader(input)
 	for {
 		line, _, err := reader.ReadLine()
+		if err == io.EOF {
+			return nil
+		}
 		if err != nil {
 			return err
 		}
-		err = downloadLink(string(line))
+		err = downloadLink(writer, string(line))
 		if err != nil {
 			return err
 		}
@@ -41,7 +54,7 @@ func downloadLinks() error {
 	return nil
 }
 
-func downloadLink(url string) error {
+func downloadLink(writer io.Writer, url string) error {
 	logger.Debugf("download %s started", url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -55,7 +68,7 @@ func downloadLink(url string) error {
 		logger.Debugf("%s", string(content))
 		return errors.New(string(content))
 	}
-	io.Copy(os.Stdout, response.Body)
+	io.Copy(writer, response.Body)
 	logger.Debugf("download %s finished", url)
 	return nil
 }
