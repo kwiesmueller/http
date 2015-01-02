@@ -34,38 +34,42 @@ type PostWithHeaderDownloader interface {
 	PostWithHeader(url string, header http.Header, body io.Reader) (resp *http.Response, err error)
 }
 
-type downloader struct{}
+type downloader struct {
+	httpClient *http.Client
+}
 
 func New() *downloader {
-	return new(downloader)
+	d := new(downloader)
+	d.httpClient = getClient()
+	return d
 }
 
 func (d *downloader) Get(url string) (resp *http.Response, err error) {
-	return BuildRequestAndDownload("GET", url, make(http.Header), nil)
+	return d.BuildRequestAndDownload("GET", url, make(http.Header), nil)
 }
 
 func (d *downloader) GetWithHeader(url string, header http.Header) (resp *http.Response, err error) {
-	return BuildRequestAndDownload("GET", url, header, nil)
+	return d.BuildRequestAndDownload("GET", url, header, nil)
 }
 
 func (d *downloader) Post(url string, body io.Reader) (resp *http.Response, err error) {
-	return BuildRequestAndDownload("POST", url, make(http.Header), body)
+	return d.BuildRequestAndDownload("POST", url, make(http.Header), body)
 }
 
 func (d *downloader) PostWithHeader(url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
-	return BuildRequestAndDownload("POST", url, header, body)
+	return d.BuildRequestAndDownload("POST", url, header, body)
 }
 
-func (d *downloader) Download(request *http.Request) (resp *http.Response, err error) {
-	return Download(request)
+func (d *downloader) Download(req *http.Request) (resp *http.Response, err error) {
+	return d.httpClient.Do(req)
 }
 
-func BuildRequestAndDownload(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
+func (d *downloader) BuildRequestAndDownload(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
 	req, err := BuildRequest(method, url, header, body)
 	if err != nil {
 		return nil, err
 	}
-	return Download(req)
+	return d.httpClient.Do(req)
 }
 
 func getClient() *http.Client {
@@ -79,13 +83,7 @@ func getClient() *http.Client {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
-	client := &http.Client{Transport: tr}
-	return client
-}
-
-func Download(request *http.Request) (resp *http.Response, err error) {
-	client := getClient()
-	return client.Do(request)
+	return &http.Client{Transport: tr}
 }
 
 func BuildRequest(method string, url string, header http.Header, body io.Reader) (*http.Request, error) {
