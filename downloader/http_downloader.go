@@ -6,15 +6,16 @@ import (
 	"net"
 	"net/http"
 	"time"
+
 	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
 
 const (
-	TIMEOUT             = 30*time.Second
-	KEEPALIVE           = 30*time.Second
-	TLSHANDSHAKETIMEOUT = 10*time.Second
+	TIMEOUT             = 30 * time.Second
+	KEEPALIVE           = 30 * time.Second
+	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
 
 type RequestDownloader interface {
@@ -64,8 +65,8 @@ func (d *downloader) PostWithHeader(url string, header http.Header, body io.Read
 }
 
 func (d *downloader) Download(req *http.Request) (resp *http.Response, err error) {
-	logger.Debugf("download %s %s started", req.Method, req.RequestURI)
-	defer logger.Debugf("download %s %s finshed", req.Method, req.RequestURI)
+	logger.Debugf("download %s %v started", req.Method, req.URL)
+	defer logger.Debugf("download %s %v finshed", req.Method, req.URL)
 	return d.httpClient.Do(req)
 }
 
@@ -79,9 +80,9 @@ func (d *downloader) BuildRequestAndDownload(method string, url string, header h
 
 func getClient() *http.Client {
 	dialFunc := (&net.Dialer{
-			Timeout: TIMEOUT,
-			//		KeepAlive: KEEPALIVE,
-		}).Dial
+		Timeout: TIMEOUT,
+		//		KeepAlive: KEEPALIVE,
+	}).Dial
 	tr := &http.Transport{
 		Proxy:           http.ProxyFromEnvironment,
 		Dial:            dialFunc,
