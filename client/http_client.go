@@ -79,6 +79,7 @@ func (d *downloader) Download(req *http.Request) (resp *http.Response, err error
 }
 
 func (d *downloader) BuildRequestAndDownload(method string, url string, header http.Header, body io.Reader) (resp *http.Response, err error) {
+	logger.Debugf("build request for method: %s url: %s", method, url)
 	req, err := BuildRequest(method, url, header, body)
 	if err != nil {
 		return nil, err
@@ -88,9 +89,9 @@ func (d *downloader) BuildRequestAndDownload(method string, url string, header h
 
 func getClient(proxy ProxyFunc) *http.Client {
 	dialFunc := (&net.Dialer{
-		Timeout: TIMEOUT,
-		//		KeepAlive: KEEPALIVE,
-	}).Dial
+			Timeout: TIMEOUT,
+			//		KeepAlive: KEEPALIVE,
+		}).Dial
 	tr := &http.Transport{
 		Proxy:           proxy,
 		Dial:            dialFunc,

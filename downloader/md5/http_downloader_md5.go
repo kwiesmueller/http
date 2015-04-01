@@ -11,27 +11,27 @@ import (
 	http_util "github.com/bborbe/http/util"
 	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
-	"github.com/bborbe/stringutil"
 )
 
 var logger = log.DefaultLogger
 
 type downloaderMd5 struct {
-	getDownloader http_client.GetDownloader
+	client http_client.GetDownloader
 }
 
-func New(getDownloader http_client.GetDownloader) *downloaderMd5 {
+func New(client http_client.GetDownloader) *downloaderMd5 {
 	d := new(downloaderMd5)
-	d.getDownloader = getDownloader
+	d.client = client
 	return d
 }
 
 func (d *downloaderMd5) Download(url string, targetDirectory *os.File) error {
-	return download(url, targetDirectory, d.getDownloader)
+	return download(url, targetDirectory, d.client)
 }
 
-func download(url string, targetDirectory *os.File, getDownloader http_client.GetDownloader) error {
-	response, err := getDownloader.Get(url)
+func download(url string, targetDirectory *os.File, client http_client.GetDownloader) error {
+	logger.Debugf("download %s to directory %s", url, targetDirectory.Name())
+	response, err := client.Get(url)
 	if err != nil {
 		return err
 	}
@@ -40,33 +40,33 @@ func download(url string, targetDirectory *os.File, getDownloader http_client.Ge
 		return err
 	}
 	filename := createFilename(content, response, targetDirectory)
-	logger.Tracef("filename: %s", filename)
+	logger.Debugf("filename: %s", filename)
 	return saveToFile(content, filename)
 }
 
 func createFilename(content []byte, response *http.Response, directory *os.File) string {
+	logger.Debugf("createFilename")
 	md5string := createMd5Checksum(content)
-	ext := getExt(response)
+	ext := http_util.FindFileExtension(response)
 	return fmt.Sprintf("%s%c%s.%s", directory.Name(), os.PathSeparator, md5string, ext)
 }
 
 func createMd5Checksum(content []byte) string {
+	logger.Debugf("create md5 checksum")
 	hasher := md5.New()
 	hasher.Write(content)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func getExt(response *http.Response) string {
-	path := response.Request.URL.Path
-	return stringutil.StringAfter(path, ".")
-}
+
 
 func saveToFile(content []byte, filename string) error {
+	logger.Debugf("save content to %s", filename)
 	writer, err := file_writer.NewFileWriter(filename)
+	defer writer.Close()
 	if err != nil {
 		return err
 	}
 	writer.Write(content)
-	writer.Close()
 	return err
 }
