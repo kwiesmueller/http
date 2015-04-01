@@ -2,21 +2,21 @@ package main
 
 import (
 	"bufio"
-	"errors"
-	"io/ioutil"
-	"net/http"
 	"os"
-
-	"regexp"
 
 	"flag"
 	"io"
 
-	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 
+	"fmt"
 	"runtime"
 	"sync"
+
+	http_client "github.com/bborbe/http/client"
+	http_downloader "github.com/bborbe/http/downloader"
+	http_downloader_by_url "github.com/bborbe/http/downloader/by_url"
+	io_util "github.com/bborbe/io/util"
 )
 
 var logger = log.DefaultLogger
@@ -24,13 +24,16 @@ var logger = log.DefaultLogger
 const (
 	PARAMETER_LOGLEVEL           = "loglevel"
 	PARAMETER_PARALLEL_DOWNLOADS = "max"
+	PARAMETER_TARGET             = "target"
 	DEFAULT_PARALLEL_DOWNLOADS   = 2
+	DEFAULT_TARGET               = "~/Downloads"
 )
 
 func main() {
 	defer logger.Close()
 	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, "one of OFF,TRACE,DEBUG,INFO,WARN,ERROR")
 	maxConcurrencyDownloadsPtr := flag.Int(PARAMETER_PARALLEL_DOWNLOADS, DEFAULT_PARALLEL_DOWNLOADS, "max parallel downloads")
+	targetDirectoryPtr := flag.String(PARAMETER_TARGET, DEFAULT_TARGET, "directory")
 	flag.Parse()
 	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
 	logger.Debugf("set log level to %s", *logLevelPtr)
@@ -40,7 +43,9 @@ func main() {
 	writer := os.Stdout
 	input := os.Stdin
 	wg := new(sync.WaitGroup)
-	err := do(writer, input, *maxConcurrencyDownloadsPtr, wg)
+	client := http_client.New()
+	downloader := http_downloader_by_url.New(client)
+	err := do(writer, input, *maxConcurrencyDownloadsPtr, wg, downloader, *targetDirectoryPtr)
 	wg.Wait()
 	if err != nil {
 		logger.Fatal(err)
@@ -49,7 +54,19 @@ func main() {
 	}
 }
 
-func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync.WaitGroup) error {
+func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync.WaitGroup, downloader http_downloader.Downloader, targetDirectoryName string) error {
+	var err error
+	if targetDirectoryName, err = io_util.NormalizePath(targetDirectoryName); err != nil {
+		return err
+	}
+	if err = io_util.IsDirectory(targetDirectoryName); err != nil {
+		fmt.Fprintf(writer, "parameter %s is invalid\n", PARAMETER_TARGET)
+		return err
+	}
+	targetDirectory, err := os.Open(targetDirectoryName)
+	if err != nil {
+		return err
+	}
 	throttle := make(chan bool, maxConcurrencyDownloads)
 	reader := bufio.NewReader(input)
 	for {
@@ -64,43 +81,10 @@ func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync
 		go func() {
 			link := string(line)
 			throttle <- true
-			downloadLink(link)
+			downloader.Download(link, targetDirectory)
 			<-throttle
 			wg.Done()
 		}()
 	}
 	return nil
-}
-
-func downloadLink(url string) error {
-	logger.Debugf("download %s started", url)
-	response, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	if response.StatusCode != http.StatusOK {
-		content, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			return err
-		}
-		logger.Debugf("%s", string(content))
-		return errors.New(string(content))
-	}
-	filename := createFilename(url)
-	logger.Debugf("to %s", filename)
-	writer, err := file_writer.NewFileWriter(filename)
-	if err != nil {
-		logger.Errorf("open '%s' failed", filename)
-		return err
-	}
-	io.Copy(writer, response.Body)
-	writer.Flush()
-	writer.Close()
-	logger.Debugf("download %s finished", url)
-	return nil
-}
-
-func createFilename(url string) string {
-	re := regexp.MustCompile("[^A-Za-z0-9\\.]+")
-	return re.ReplaceAllString(url, "_")
 }

@@ -13,7 +13,7 @@ func TestDo(t *testing.T) {
 	writer := io_mock.NewWriter()
 	input := io_mock.NewReadCloserString("")
 	wg := new(sync.WaitGroup)
-	err := do(writer, input, 2, wg)
+	err := do(writer, input, 2, wg, nil, "/tmp")
 	err = AssertThat(err, NilValue())
 	if err != nil {
 		t.Fatal(err)
