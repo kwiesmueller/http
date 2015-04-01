@@ -8,7 +8,7 @@ import (
 )
 
 func TestImplementsDownloader(t *testing.T) {
-	r := New()
+	r := New(nil)
 	var i *downloader.Downloader
 	if err := AssertThat(r, Implements(i)); err != nil {
 		t.Fatal(err)

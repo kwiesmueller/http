@@ -10,7 +10,7 @@ import (
 
 	"io"
 
-	"github.com/bborbe/http/client"
+	http_client "github.com/bborbe/http/client"
 	"github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 
@@ -20,10 +20,10 @@ import (
 var logger = log.DefaultLogger
 
 type downloaderByUrl struct {
-	getDownloader client.GetDownloader
+	getDownloader http_client.GetDownloader
 }
 
-func New(getDownloader client.GetDownloader) *downloaderByUrl {
+func New(getDownloader http_client.GetDownloader) *downloaderByUrl {
 	d := new(downloaderByUrl)
 	d.getDownloader = getDownloader
 	return d
@@ -33,7 +33,7 @@ func (d *downloaderByUrl) Download(url string, targetDirectory *os.File) error {
 	return downloadLink(url, targetDirectory, d.getDownloader)
 }
 
-func downloadLink(url string, targetDirectory *os.File, getDownloader client.GetDownloader) error {
+func downloadLink(url string, targetDirectory *os.File, getDownloader http_client.GetDownloader) error {
 	logger.Debugf("download %s started", url)
 	response, err := getDownloader.Get(url)
 	if err != nil {
