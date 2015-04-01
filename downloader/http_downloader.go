@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"net/url"
+
 	"github.com/bborbe/log"
 )
 
@@ -44,7 +46,13 @@ type downloader struct {
 
 func New() *downloader {
 	d := new(downloader)
-	d.httpClient = getClient()
+	d.httpClient = getClient(http.ProxyFromEnvironment)
+	return d
+}
+
+func NewNoProxy() *downloader {
+	d := new(downloader)
+	d.httpClient = getClient(nil)
 	return d
 }
 
@@ -78,19 +86,21 @@ func (d *downloader) BuildRequestAndDownload(method string, url string, header h
 	return d.Download(req)
 }
 
-func getClient() *http.Client {
+func getClient(proxy ProxyFunc) *http.Client {
 	dialFunc := (&net.Dialer{
 		Timeout: TIMEOUT,
 		//		KeepAlive: KEEPALIVE,
 	}).Dial
 	tr := &http.Transport{
-		Proxy:           http.ProxyFromEnvironment,
+		Proxy:           proxy,
 		Dial:            dialFunc,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
 	return &http.Client{Transport: tr}
 }
+
+type ProxyFunc func(req *http.Request) (*url.URL, error)
 
 func BuildRequest(method string, url string, header http.Header, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, url, body)
