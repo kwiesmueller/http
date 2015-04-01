@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"testing"
 
+	"net/url"
+
 	. "github.com/bborbe/assert"
 	io_mock "github.com/bborbe/io/mock"
-	"net/url"
 )
 
 func TestResponseToByteArray(t *testing.T) {
@@ -44,9 +45,9 @@ func TestResponseToString(t *testing.T) {
 func TestFindFileExtension(t *testing.T) {
 	var err error
 
-	response := &http.Response {}
+	response := &http.Response{}
 
-	if err = AssertThat(FindFileExtension(response), Is("")) ; err != nil {
+	if err = AssertThat(FindFileExtension(response), Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -57,9 +58,9 @@ func TestFindFileExtensionUrlWithDot(t *testing.T) {
 	if u, err = url.ParseRequestURI("http://www.example/robots.txt"); err != nil {
 		t.Fatal(err)
 	}
-	response := &http.Response {Request:&http.Request{URL:u}}
+	response := &http.Response{Request: &http.Request{URL: u}}
 
-	if err = AssertThat(FindFileExtension(response), Is("txt")) ; err != nil {
+	if err = AssertThat(FindFileExtension(response), Is("txt")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -70,33 +71,33 @@ func TestFindFileExtensionUrlWithDotAtLast(t *testing.T) {
 	if u, err = url.ParseRequestURI("http://www.example/robots."); err != nil {
 		t.Fatal(err)
 	}
-	response := &http.Response {Request:&http.Request{URL:u}}
+	response := &http.Response{Request: &http.Request{URL: u}}
 
-	if err = AssertThat(FindFileExtension(response), Is("")) ; err != nil {
+	if err = AssertThat(FindFileExtension(response), Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestFindFileExtensionHeader(t *testing.T) {
 	var err error
-	response := &http.Response {Header:http.Header{}}
-	if err = AssertThat(FindFileExtension(response), Is("")) ; err != nil {
+	response := &http.Response{Header: http.Header{}}
+	if err = AssertThat(FindFileExtension(response), Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestFindFileExtensionHeaderContentTypeKownType(t *testing.T) {
 	var err error
-	response := &http.Response {Header:http.Header{"Content-Type":[]string{"image/jpeg"}}}
-	if err = AssertThat(FindFileExtension(response), Is("jpg")) ; err != nil {
+	response := &http.Response{Header: http.Header{"Content-Type": []string{"image/jpeg"}}}
+	if err = AssertThat(FindFileExtension(response), Is("jpg")); err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestFindFileExtensionHeaderContentTypeUnkownType(t *testing.T) {
 	var err error
-	response := &http.Response {Header:http.Header{"Content-Type":[]string{"text/foo"}}}
-	if err = AssertThat(FindFileExtension(response), Is("")) ; err != nil {
+	response := &http.Response{Header: http.Header{"Content-Type": []string{"text/foo"}}}
+	if err = AssertThat(FindFileExtension(response), Is("")); err != nil {
 		t.Fatal(err)
 	}
 }

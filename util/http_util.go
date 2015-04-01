@@ -22,7 +22,7 @@ var contentTypeToExt = map[string]string{
 }
 
 func FindFileExtension(response *http.Response) string {
-	if response.Request != nil && response.Request.URL != nil{
+	if response.Request != nil && response.Request.URL != nil {
 		path := response.Request.URL.Path
 		pos := strings.LastIndex(path, ".")
 		if pos > 0 {

@@ -89,9 +89,9 @@ func (d *downloader) BuildRequestAndDownload(method string, url string, header h
 
 func getClient(proxy ProxyFunc) *http.Client {
 	dialFunc := (&net.Dialer{
-			Timeout: TIMEOUT,
-			//		KeepAlive: KEEPALIVE,
-		}).Dial
+		Timeout: TIMEOUT,
+		//		KeepAlive: KEEPALIVE,
+	}).Dial
 	tr := &http.Transport{
 		Proxy:           proxy,
 		Dial:            dialFunc,

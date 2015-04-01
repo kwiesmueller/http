@@ -58,8 +58,6 @@ func createMd5Checksum(content []byte) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-
-
 func saveToFile(content []byte, filename string) error {
 	logger.Debugf("save content to %s", filename)
 	writer, err := file_writer.NewFileWriter(filename)
