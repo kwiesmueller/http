@@ -51,3 +51,28 @@ func TestGetRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestDefaultMethodIsGet(t *testing.T) {
+	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
+	request, err := r.GetRequest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AssertThat(request.Method, Is("GET"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSetMethod(t *testing.T) {
+	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
+	r.SetMethod("POST")
+	request, err := r.GetRequest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AssertThat(request.Method, Is("POST"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}

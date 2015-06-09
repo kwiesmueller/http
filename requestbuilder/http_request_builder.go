@@ -5,6 +5,7 @@ import "net/http"
 type HttpRequestBuilder interface {
 	AddParameter(key string, value ...string)
 	AddHeader(key string, values ...string)
+	SetMethod(key string)
 	GetRequest() (*http.Request, error)
 }
 
@@ -22,6 +23,10 @@ func NewHttpRequestBuilder(url string) *httpRequestBuilder {
 	r.parameter = make(map[string][]string)
 	r.header = make(http.Header)
 	return r
+}
+
+func (r *httpRequestBuilder) SetMethod(method string) {
+	r.method = method
 }
 
 func (r *httpRequestBuilder) AddHeader(key string, values ...string) {
