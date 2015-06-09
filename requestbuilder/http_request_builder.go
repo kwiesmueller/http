@@ -1,11 +1,15 @@
 package requestbuilder
 
-import "net/http"
+import (
+	"io"
+	"net/http"
+)
 
 type HttpRequestBuilder interface {
 	AddParameter(key string, value ...string)
 	AddHeader(key string, values ...string)
 	SetMethod(key string)
+	SetBody(reader io.ReadCloser)
 	GetRequest() (*http.Request, error)
 }
 
@@ -14,6 +18,7 @@ type httpRequestBuilder struct {
 	parameter map[string][]string
 	header    http.Header
 	method    string
+	body      io.ReadCloser
 }
 
 func NewHttpRequestBuilder(url string) *httpRequestBuilder {
@@ -23,6 +28,10 @@ func NewHttpRequestBuilder(url string) *httpRequestBuilder {
 	r.parameter = make(map[string][]string)
 	r.header = make(http.Header)
 	return r
+}
+
+func (r *httpRequestBuilder) SetBody(body io.ReadCloser) {
+	r.body = body
 }
 
 func (r *httpRequestBuilder) SetMethod(method string) {
@@ -43,6 +52,7 @@ func (r *httpRequestBuilder) GetRequest() (*http.Request, error) {
 		return nil, err
 	}
 	req.Header = r.header
+	req.Body = r.body
 	return req, nil
 }
 

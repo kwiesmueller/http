@@ -3,6 +3,9 @@ package requestbuilder
 import (
 	"testing"
 
+	"io/ioutil"
+	"strings"
+
 	. "github.com/bborbe/assert"
 )
 
@@ -72,6 +75,23 @@ func TestSetMethod(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = AssertThat(request.Method, Is("POST"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSetBody(t *testing.T) {
+	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
+	r.SetBody(ioutil.NopCloser(strings.NewReader("hello world")))
+	request, err := r.GetRequest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AssertThat(string(content), Is("hello world"))
 	if err != nil {
 		t.Fatal(err)
 	}
