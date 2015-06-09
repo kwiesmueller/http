@@ -82,7 +82,7 @@ func TestSetMethod(t *testing.T) {
 
 func TestSetBody(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
-	r.SetBody(ioutil.NopCloser(strings.NewReader("hello world")))
+	r.SetBody(strings.NewReader("hello world"))
 	request, err := r.GetRequest()
 	if err != nil {
 		t.Fatal(err)

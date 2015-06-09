@@ -9,7 +9,7 @@ type HttpRequestBuilder interface {
 	AddParameter(key string, value ...string)
 	AddHeader(key string, values ...string)
 	SetMethod(key string)
-	SetBody(reader io.ReadCloser)
+	SetBody(reader io.Reader)
 	GetRequest() (*http.Request, error)
 }
 
@@ -18,7 +18,7 @@ type httpRequestBuilder struct {
 	parameter map[string][]string
 	header    http.Header
 	method    string
-	body      io.ReadCloser
+	body      io.Reader
 }
 
 func NewHttpRequestBuilder(url string) *httpRequestBuilder {
@@ -30,7 +30,7 @@ func NewHttpRequestBuilder(url string) *httpRequestBuilder {
 	return r
 }
 
-func (r *httpRequestBuilder) SetBody(body io.ReadCloser) {
+func (r *httpRequestBuilder) SetBody(body io.Reader) {
 	r.body = body
 }
 
@@ -47,12 +47,11 @@ func (r *httpRequestBuilder) AddParameter(key string, values ...string) {
 }
 
 func (r *httpRequestBuilder) GetRequest() (*http.Request, error) {
-	req, err := http.NewRequest(r.method, r.getUrlWithParameter(), nil)
+	req, err := http.NewRequest(r.method, r.getUrlWithParameter(), r.body)
 	if err != nil {
 		return nil, err
 	}
 	req.Header = r.header
-	req.Body = r.body
 	return req, nil
 }
 
