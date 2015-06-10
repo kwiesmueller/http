@@ -29,14 +29,19 @@ func NewPostWithHeaderDownloader() *PostWithHeaderDownloaderMock {
 	return new(PostWithHeaderDownloaderMock)
 }
 
-type RequestDownloaderMock struct{}
+type RequestDownloaderMock struct {
+	Request  *http.Request
+	Response *http.Response
+	Error    error
+}
 
 func NewRequestDownloader() *RequestDownloaderMock {
 	return new(RequestDownloaderMock)
 }
 
 func (o *RequestDownloaderMock) Download(request *http.Request) (resp *http.Response, err error) {
-	return nil, nil
+	o.Request = request
+	return o.Response, o.Error
 }
 
 func (o *GetDownloaderMock) Get(url string) (resp *http.Response, err error) {
