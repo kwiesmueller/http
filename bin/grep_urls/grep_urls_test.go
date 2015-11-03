@@ -36,3 +36,18 @@ func TestDoBugfix(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestDoWithParameters(t *testing.T) {
+	var err error
+	writer := io_mock.NewWriter()
+	input := io_mock.NewReadCloserString(" http://www.example.com?a=b ")
+	err = do(writer, input)
+	err = AssertThat(err, NilValue())
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AssertThat(string(writer.Content()), Is("http://www.example.com?a=b\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+}

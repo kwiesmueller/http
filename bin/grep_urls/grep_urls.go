@@ -7,7 +7,7 @@ import (
 
 	"flag"
 
-	"github.com/bborbe/crawler/linkparser"
+	crawler_linkparser "github.com/bborbe/crawler/linkparser"
 
 	"fmt"
 
@@ -41,8 +41,8 @@ func do(writer io.Writer, input io.Reader) error {
 	contentBuffer := bytes.NewBuffer(nil)
 	io.Copy(contentBuffer, input)
 
-	l := linkparser.New()
-	links := l.ParseAbsolute(string(contentBuffer.Bytes()))
+	linkparser := crawler_linkparser.New()
+	links := linkparser.ParseAbsolute(string(contentBuffer.Bytes()))
 	for match := range links {
 		fmt.Fprintf(writer, "%s\n", match)
 	}
