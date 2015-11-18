@@ -15,8 +15,8 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	TIMEOUT             = 30 * time.Second
-	KEEPALIVE           = 30 * time.Second
+	TIMEOUT = 30 * time.Second
+	KEEPALIVE = 30 * time.Second
 	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
 
@@ -46,14 +46,22 @@ type downloader struct {
 
 func New() *downloader {
 	d := new(downloader)
-	d.httpClient = getClient(http.ProxyFromEnvironment)
+	d.httpClient = GetClientWithProxy()
 	return d
 }
 
 func NewNoProxy() *downloader {
 	d := new(downloader)
-	d.httpClient = getClient(nil)
+	d.httpClient = GetClientWithoutProxy()
 	return d
+}
+
+func GetClientWithProxy() *http.Client {
+	return getClient(http.ProxyFromEnvironment)
+}
+
+func GetClientWithoutProxy() *http.Client {
+	return getClient(nil)
 }
 
 func (d *downloader) Get(url string) (resp *http.Response, err error) {
