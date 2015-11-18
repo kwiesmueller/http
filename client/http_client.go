@@ -15,8 +15,8 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	TIMEOUT = 30 * time.Second
-	KEEPALIVE = 30 * time.Second
+	TIMEOUT             = 30 * time.Second
+	KEEPALIVE           = 30 * time.Second
 	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
 
