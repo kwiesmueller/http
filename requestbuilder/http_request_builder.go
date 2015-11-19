@@ -11,6 +11,8 @@ type HttpRequestBuilder interface {
 	SetMethod(key string)
 	SetBody(reader io.Reader)
 	GetRequest() (*http.Request, error)
+	AddBasicAuth(username, password string)
+	AddContentType(contentType string)
 }
 
 type httpRequestBuilder struct {
@@ -19,6 +21,8 @@ type httpRequestBuilder struct {
 	header    http.Header
 	method    string
 	body      io.Reader
+	username  string
+	password  string
 }
 
 func NewHttpRequestBuilder(url string) *httpRequestBuilder {
@@ -28,6 +32,15 @@ func NewHttpRequestBuilder(url string) *httpRequestBuilder {
 	r.parameter = make(map[string][]string)
 	r.header = make(http.Header)
 	return r
+}
+
+func (r *httpRequestBuilder) AddContentType(contentType string) {
+	r.AddHeader("Content-Type", contentType)
+}
+
+func (r *httpRequestBuilder) AddBasicAuth(username, password string) {
+	r.username = username
+	r.password = password
 }
 
 func (r *httpRequestBuilder) SetBody(body io.Reader) {
@@ -52,6 +65,9 @@ func (r *httpRequestBuilder) GetRequest() (*http.Request, error) {
 		return nil, err
 	}
 	req.Header = r.header
+	if len(r.username) > 0 || len(r.password) > 0 {
+		req.SetBasicAuth(r.username, r.password)
+	}
 	return req, nil
 }
 
