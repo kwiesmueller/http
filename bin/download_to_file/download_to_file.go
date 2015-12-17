@@ -31,7 +31,7 @@ const (
 
 func main() {
 	defer logger.Close()
-	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, "one of OFF,TRACE,DEBUG,INFO,WARN,ERROR")
+	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, log.FLAG_USAGE)
 	maxConcurrencyDownloadsPtr := flag.Int(PARAMETER_PARALLEL_DOWNLOADS, DEFAULT_PARALLEL_DOWNLOADS, "max parallel downloads")
 	targetDirectoryPtr := flag.String(PARAMETER_TARGET, DEFAULT_TARGET, "directory")
 	flag.Parse()
