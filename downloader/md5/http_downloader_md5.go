@@ -9,7 +9,7 @@ import (
 
 	http_client "github.com/bborbe/http/client"
 	http_util "github.com/bborbe/http/util"
-	"github.com/bborbe/io/file_writer"
+	io_file_writer "github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 )
 
@@ -60,7 +60,7 @@ func createMd5Checksum(content []byte) string {
 
 func saveToFile(content []byte, filename string) error {
 	logger.Debugf("save content to %s", filename)
-	writer, err := file_writer.NewFileWriter(filename)
+	writer, err := io_file_writer.NewFileWriter(filename)
 	defer writer.Close()
 	if err != nil {
 		return err

@@ -2,19 +2,16 @@ package by_url
 
 import (
 	"errors"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
-
 	"regexp"
 
-	"io"
-
 	http_client "github.com/bborbe/http/client"
-	"github.com/bborbe/io/file_writer"
+	io_file_writer "github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
-
-	"fmt"
 )
 
 var logger = log.DefaultLogger
@@ -52,7 +49,7 @@ func downloadLink(url string, targetDirectory *os.File, getDownloader http_clien
 
 	filename := createFilename(url)
 	logger.Debugf("to %s", filename)
-	writer, err := file_writer.NewFileWriter(fmt.Sprintf("%s/%s", targetDirectory.Name(), filename))
+	writer, err := io_file_writer.NewFileWriter(fmt.Sprintf("%s/%s", targetDirectory.Name(), filename))
 	if err != nil {
 		logger.Errorf("open '%s' failed", filename)
 		return err
