@@ -8,8 +8,7 @@ import (
 	"os"
 
 	http_client "github.com/bborbe/http/client"
- 	http_client_builder "github.com/bborbe/http/client/builder"
- 	http_util "github.com/bborbe/http/util"
+	http_util "github.com/bborbe/http/util"
 	io_file_writer "github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 )
