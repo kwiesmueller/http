@@ -13,8 +13,7 @@ import (
 	"runtime"
 	"sync"
 
-	http_client "github.com/bborbe/http/client"
-	http_client_builder "github.com/bborbe/http/client/builder"
+	http_client_builder "github.com/bborbe/http/client_builder"
 	http_downloader "github.com/bborbe/http/downloader"
 	http_downloader_by_url "github.com/bborbe/http/downloader/by_url"
 	io_util "github.com/bborbe/io/util"
@@ -45,7 +44,7 @@ func main() {
 	input := os.Stdin
 	wg := new(sync.WaitGroup)
 	httpClientBuilder := http_client_builder.New()
-	httpClient := http_client.New(httpClientBuilder.Build())
+	httpClient := httpClientBuilder.Build()
 	downloader := http_downloader_by_url.New(httpClient.Get)
 
 	err := do(writer, input, *maxConcurrencyDownloadsPtr, wg, downloader, *targetDirectoryPtr)

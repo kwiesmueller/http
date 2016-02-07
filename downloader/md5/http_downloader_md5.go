@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	http_client "github.com/bborbe/http/client"
+
 	http_util "github.com/bborbe/http/util"
 	io_file_writer "github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
@@ -15,23 +15,25 @@ import (
 
 var logger = log.DefaultLogger
 
+type GetUrl func(url string) (resp *http.Response, err error)
+
 type downloaderMd5 struct {
-	client http_client.GetDownloader
+	getUrl GetUrl
 }
 
-func New(client http_client.GetDownloader) *downloaderMd5 {
+func New(getUrl GetUrl) *downloaderMd5 {
 	d := new(downloaderMd5)
-	d.client = client
+	d.getUrl = getUrl
 	return d
 }
 
 func (d *downloaderMd5) Download(url string, targetDirectory *os.File) error {
-	return download(url, targetDirectory, d.client)
+	return download(url, targetDirectory, d.getUrl)
 }
 
-func download(url string, targetDirectory *os.File, client http_client.GetDownloader) error {
+func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
 	logger.Debugf("download %s to directory %s", url, targetDirectory.Name())
-	response, err := client.Get(url)
+	response, err := getUrl(url)
 	if err != nil {
 		return err
 	}

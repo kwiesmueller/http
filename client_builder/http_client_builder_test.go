@@ -1,4 +1,4 @@
-package builder
+package client_builder
 
 import (
 	"testing"

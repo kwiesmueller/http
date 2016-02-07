@@ -15,25 +15,26 @@ import (
 
 var logger = log.DefaultLogger
 
-type DownloadUrl func(url string) (resp *http.Response, err error)
+
+type GetUrl func(url string) (resp *http.Response, err error)
 
 type downloaderByUrl struct {
-	downloadUrl DownloadUrl
+	getUrl GetUrl
 }
 
-func New(downloadUrl DownloadUrl) *downloaderByUrl {
+func New(getUrl GetUrl) *downloaderByUrl {
 	d := new(downloaderByUrl)
-	d.downloadUrl = downloadUrl
+	d.getUrl = getUrl
 	return d
 }
 
 func (d *downloaderByUrl) Download(url string, targetDirectory *os.File) error {
-	return downloadLink(url, targetDirectory, d.downloadUrl)
+	return downloadLink(url, targetDirectory, d.getUrl)
 }
 
-func downloadLink(url string, targetDirectory *os.File, downloadUrl DownloadUrl) error {
+func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 	logger.Debugf("download %s started", url)
-	response, err := downloadUrl(url)
+	response, err := getUrl(url)
 	if err != nil {
 		return err
 	}
