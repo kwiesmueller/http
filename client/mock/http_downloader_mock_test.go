@@ -5,7 +5,8 @@ import (
 
 	. "github.com/bborbe/assert"
 	http_client "github.com/bborbe/http/client"
-)
+ 	http_client_builder "github.com/bborbe/http/client/builder"
+ )
 
 func TestImplementsDownloaderGet(t *testing.T) {
 	d := NewGetDownloader()

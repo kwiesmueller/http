@@ -14,7 +14,8 @@ import (
 	"sync"
 
 	http_client "github.com/bborbe/http/client"
-	http_client_builder "github.com/bborbe/http/client/builder"
+ 	http_client_builder "github.com/bborbe/http/client/builder"
+ 	http_client_builder "github.com/bborbe/http/client/builder"
 	http_downloader "github.com/bborbe/http/downloader"
 	http_downloader_by_url "github.com/bborbe/http/downloader/by_url"
 	io_util "github.com/bborbe/io/util"
@@ -23,11 +24,11 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	PARAMETER_LOGLEVEL           = "loglevel"
+	PARAMETER_LOGLEVEL = "loglevel"
 	PARAMETER_PARALLEL_DOWNLOADS = "max"
-	PARAMETER_TARGET             = "target"
-	DEFAULT_PARALLEL_DOWNLOADS   = 2
-	DEFAULT_TARGET               = "~/Downloads"
+	PARAMETER_TARGET = "target"
+	DEFAULT_PARALLEL_DOWNLOADS = 2
+	DEFAULT_TARGET = "~/Downloads"
 )
 
 func main() {
@@ -44,9 +45,10 @@ func main() {
 	writer := os.Stdout
 	input := os.Stdin
 	wg := new(sync.WaitGroup)
-	httpClientBuilder := builder.New()
-	client := http_client.New(httpClientBuilder.Build())
-	downloader := http_downloader_by_url.New(client.Get)
+	httpClientBuilder := http_client_builder.New()
+	httpClient := http_client.New(httpClientBuilder.Build())
+	downloader := http_downloader_by_url.New(httpClient.Get)
+
 	err := do(writer, input, *maxConcurrencyDownloadsPtr, wg, downloader, *targetDirectoryPtr)
 	wg.Wait()
 	if err != nil {
