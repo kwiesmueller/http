@@ -15,7 +15,6 @@ import (
 
 var logger = log.DefaultLogger
 
-
 type GetUrl func(url string) (resp *http.Response, err error)
 
 type downloaderByUrl struct {

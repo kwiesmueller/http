@@ -22,11 +22,11 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	PARAMETER_LOGLEVEL = "loglevel"
+	PARAMETER_LOGLEVEL           = "loglevel"
 	PARAMETER_PARALLEL_DOWNLOADS = "max"
-	PARAMETER_TARGET = "target"
-	DEFAULT_PARALLEL_DOWNLOADS = 2
-	DEFAULT_TARGET = "~/Downloads"
+	PARAMETER_TARGET             = "target"
+	DEFAULT_PARALLEL_DOWNLOADS   = 2
+	DEFAULT_TARGET               = "~/Downloads"
 )
 
 func main() {

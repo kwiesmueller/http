@@ -1,10 +1,11 @@
 package redirect_follower
 
 import (
-	"net/http"
 	"fmt"
-	"github.com/bborbe/log"
+	"net/http"
 	"net/url"
+
+	"github.com/bborbe/log"
 )
 
 const LIMIT = 10
@@ -22,7 +23,7 @@ type redirectFollower struct {
 }
 
 func New(executeRequest ExecuteRequest) *redirectFollower {
-	r := new (redirectFollower)
+	r := new(redirectFollower)
 	r.executeRequest = executeRequest
 	return r
 }
@@ -39,7 +40,7 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 		return nil, err
 	}
 	logger.Debugf("response %v", resp)
-	if resp.StatusCode / 100 == 3 {
+	if resp.StatusCode/100 == 3 {
 		logger.Debugf("redirect - statuscode: %d", resp.StatusCode)
 		if counter > LIMIT {
 			return nil, fmt.Errorf("redirect limit reached")
@@ -56,7 +57,7 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 			return nil, nil
 		}
 		p.Host = p.URL.Host
-		return executeRequestAndFollow(executeRequest, p, counter + 1)
+		return executeRequestAndFollow(executeRequest, p, counter+1)
 	}
 
 	return resp, nil

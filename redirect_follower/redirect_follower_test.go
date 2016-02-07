@@ -3,9 +3,10 @@ package redirect_follower
 import (
 	"testing"
 
-	. "github.com/bborbe/assert"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	. "github.com/bborbe/assert"
 	"github.com/bborbe/http/client_builder"
 	"github.com/bborbe/http/requestbuilder"
 )
@@ -89,7 +90,7 @@ func TestIntegrated(t *testing.T) {
 	if err = AssertThat(response, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(response.StatusCode / 100, Is(2)); err != nil {
+	if err = AssertThat(response.StatusCode/100, Is(2)); err != nil {
 		t.Fatal(err)
 	}
 

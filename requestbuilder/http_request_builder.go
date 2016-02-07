@@ -50,17 +50,17 @@ func (r *httpRequestBuilder) SetBody(body io.Reader) HttpRequestBuilder {
 	return r
 }
 
-func (r *httpRequestBuilder) SetMethod(method string) HttpRequestBuilder{
+func (r *httpRequestBuilder) SetMethod(method string) HttpRequestBuilder {
 	r.method = method
 	return r
 }
 
-func (r *httpRequestBuilder) AddHeader(key string, values ...string) HttpRequestBuilder{
+func (r *httpRequestBuilder) AddHeader(key string, values ...string) HttpRequestBuilder {
 	r.header[key] = values
 	return r
 }
 
-func (r *httpRequestBuilder) AddParameter(key string, values ...string) HttpRequestBuilder{
+func (r *httpRequestBuilder) AddParameter(key string, values ...string) HttpRequestBuilder {
 	r.parameter[key] = values
 	return r
 }
