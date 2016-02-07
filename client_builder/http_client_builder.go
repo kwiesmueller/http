@@ -23,6 +23,7 @@ const (
 
 type HttpClientBuilder interface {
 	Build() *http.Client
+	BuildRoundTripper() http.RoundTripper
 	WithProxy() HttpClientBuilder
 	WithoutProxy() HttpClientBuilder
 	WithRedirects() HttpClientBuilder
@@ -45,20 +46,24 @@ func New() *httpClientBuilder {
 	return b
 }
 
-func (b *httpClientBuilder) Build() *http.Client {
-	logger.Debugf("build http client")
+func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
+	logger.Debugf("build http transport")
 	dialFunc := (&net.Dialer{
 		Timeout: TIMEOUT,
 		//		KeepAlive: KEEPALIVE,
 	}).Dial
-	tr := &http.Transport{
+	return &http.Transport{
 		Proxy:           b.proxy,
 		Dial:            dialFunc,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
+}
+
+func (b *httpClientBuilder) Build() *http.Client {
+	logger.Debugf("build http client")
 	return &http.Client{
-		Transport:     tr,
+		Transport:     b.BuildRoundTripper(),
 		CheckRedirect: b.checkRedirect,
 	}
 }
