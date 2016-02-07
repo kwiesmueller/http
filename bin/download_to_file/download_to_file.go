@@ -14,7 +14,7 @@ import (
 	"sync"
 
 	http_client "github.com/bborbe/http/client"
-	"github.com/bborbe/http/client/builder"
+	http_client_builder "github.com/bborbe/http/client/builder"
 	http_downloader "github.com/bborbe/http/downloader"
 	http_downloader_by_url "github.com/bborbe/http/downloader/by_url"
 	io_util "github.com/bborbe/io/util"
