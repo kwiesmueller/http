@@ -9,30 +9,31 @@ import (
 	"os"
 	"regexp"
 
-	http_client "github.com/bborbe/http/client"
 	io_file_writer "github.com/bborbe/io/file_writer"
 	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
 
+type DownloadUrl func(url string) (resp *http.Response, err error)
+
 type downloaderByUrl struct {
-	getDownloader http_client.GetDownloader
+	downloadUrl DownloadUrl
 }
 
-func New(getDownloader http_client.GetDownloader) *downloaderByUrl {
+func New(downloadUrl DownloadUrl) *downloaderByUrl {
 	d := new(downloaderByUrl)
-	d.getDownloader = getDownloader
+	d.downloadUrl = downloadUrl
 	return d
 }
 
 func (d *downloaderByUrl) Download(url string, targetDirectory *os.File) error {
-	return downloadLink(url, targetDirectory, d.getDownloader)
+	return downloadLink(url, targetDirectory, d.downloadUrl)
 }
 
-func downloadLink(url string, targetDirectory *os.File, getDownloader http_client.GetDownloader) error {
+func downloadLink(url string, targetDirectory *os.File, downloadUrl DownloadUrl) error {
 	logger.Debugf("download %s started", url)
-	response, err := getDownloader.Get(url)
+	response, err := downloadUrl(url)
 	if err != nil {
 		return err
 	}

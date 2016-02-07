@@ -7,7 +7,7 @@ import (
 )
 
 func TestImplementsDownloaderGet(t *testing.T) {
-	downloader := New()
+	downloader := New(nil)
 	var i *GetDownloader
 	err := AssertThat(downloader, Implements(i).Message("check type"))
 	if err != nil {
@@ -16,7 +16,7 @@ func TestImplementsDownloaderGet(t *testing.T) {
 }
 
 func TestImplementsDownloaderPost(t *testing.T) {
-	downloader := New()
+	downloader := New(nil)
 	var i *PostDownloader
 	err := AssertThat(downloader, Implements(i).Message("check type"))
 	if err != nil {
@@ -25,7 +25,7 @@ func TestImplementsDownloaderPost(t *testing.T) {
 }
 
 func TestImplementsDownloaderGetWithHeader(t *testing.T) {
-	downloader := New()
+	downloader := New(nil)
 	var i *GetWithHeaderDownloader
 	err := AssertThat(downloader, Implements(i).Message("check type"))
 	if err != nil {
@@ -34,7 +34,7 @@ func TestImplementsDownloaderGetWithHeader(t *testing.T) {
 }
 
 func TestImplementsDownloaderPostWithHeader(t *testing.T) {
-	downloader := New()
+	downloader := New(nil)
 	var i *PostWithHeaderDownloader
 	err := AssertThat(downloader, Implements(i).Message("check type"))
 	if err != nil {
@@ -43,7 +43,7 @@ func TestImplementsDownloaderPostWithHeader(t *testing.T) {
 }
 
 func TestImplementsRequestDownloader(t *testing.T) {
-	downloader := New()
+	downloader := New(nil)
 	var i *RequestDownloader
 	err := AssertThat(downloader, Implements(i).Message("check type"))
 	if err != nil {

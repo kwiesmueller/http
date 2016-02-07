@@ -1,24 +1,13 @@
 package client
 
 import (
-	"crypto/tls"
 	"io"
-	"net"
 	"net/http"
-	"time"
-
-	"net/url"
 
 	"github.com/bborbe/log"
 )
 
 var logger = log.DefaultLogger
-
-const (
-	TIMEOUT             = 30 * time.Second
-	KEEPALIVE           = 30 * time.Second
-	TLSHANDSHAKETIMEOUT = 10 * time.Second
-)
 
 type RequestDownloader interface {
 	Download(request *http.Request) (resp *http.Response, err error)
@@ -44,24 +33,10 @@ type downloader struct {
 	httpClient *http.Client
 }
 
-func New() *downloader {
+func New(httpClient *http.Client) *downloader {
 	d := new(downloader)
-	d.httpClient = GetClientWithProxy()
+	d.httpClient = httpClient
 	return d
-}
-
-func NewNoProxy() *downloader {
-	d := new(downloader)
-	d.httpClient = GetClientWithoutProxy()
-	return d
-}
-
-func GetClientWithProxy() *http.Client {
-	return getClient(http.ProxyFromEnvironment)
-}
-
-func GetClientWithoutProxy() *http.Client {
-	return getClient(nil)
 }
 
 func (d *downloader) Get(url string) (resp *http.Response, err error) {
@@ -94,22 +69,6 @@ func (d *downloader) BuildRequestAndDownload(method string, url string, header h
 	}
 	return d.Download(req)
 }
-
-func getClient(proxy ProxyFunc) *http.Client {
-	dialFunc := (&net.Dialer{
-		Timeout: TIMEOUT,
-		//		KeepAlive: KEEPALIVE,
-	}).Dial
-	tr := &http.Transport{
-		Proxy:           proxy,
-		Dial:            dialFunc,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
-	}
-	return &http.Client{Transport: tr}
-}
-
-type ProxyFunc func(req *http.Request) (*url.URL, error)
 
 func BuildRequest(method string, url string, header http.Header, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, url, body)
