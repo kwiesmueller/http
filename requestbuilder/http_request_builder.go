@@ -6,13 +6,13 @@ import (
 )
 
 type HttpRequestBuilder interface {
-	AddParameter(key string, value ...string)
-	AddHeader(key string, values ...string)
-	SetMethod(key string)
-	SetBody(reader io.Reader)
-	GetRequest() (*http.Request, error)
-	AddBasicAuth(username, password string)
-	AddContentType(contentType string)
+	AddParameter(key string, value ...string) HttpRequestBuilder
+	AddHeader(key string, values ...string) HttpRequestBuilder
+	SetMethod(key string) HttpRequestBuilder
+	SetBody(reader io.Reader) HttpRequestBuilder
+	AddBasicAuth(username, password string) HttpRequestBuilder
+	AddContentType(contentType string) HttpRequestBuilder
+	Build() (*http.Request, error)
 }
 
 type httpRequestBuilder struct {
@@ -34,32 +34,38 @@ func NewHttpRequestBuilder(url string) *httpRequestBuilder {
 	return r
 }
 
-func (r *httpRequestBuilder) AddContentType(contentType string) {
+func (r *httpRequestBuilder) AddContentType(contentType string) HttpRequestBuilder {
 	r.AddHeader("Content-Type", contentType)
+	return r
 }
 
-func (r *httpRequestBuilder) AddBasicAuth(username, password string) {
+func (r *httpRequestBuilder) AddBasicAuth(username, password string) HttpRequestBuilder {
 	r.username = username
 	r.password = password
+	return r
 }
 
-func (r *httpRequestBuilder) SetBody(body io.Reader) {
+func (r *httpRequestBuilder) SetBody(body io.Reader) HttpRequestBuilder {
 	r.body = body
+	return r
 }
 
-func (r *httpRequestBuilder) SetMethod(method string) {
+func (r *httpRequestBuilder) SetMethod(method string) HttpRequestBuilder{
 	r.method = method
+	return r
 }
 
-func (r *httpRequestBuilder) AddHeader(key string, values ...string) {
+func (r *httpRequestBuilder) AddHeader(key string, values ...string) HttpRequestBuilder{
 	r.header[key] = values
+	return r
 }
 
-func (r *httpRequestBuilder) AddParameter(key string, values ...string) {
+func (r *httpRequestBuilder) AddParameter(key string, values ...string) HttpRequestBuilder{
 	r.parameter[key] = values
+	return r
 }
 
-func (r *httpRequestBuilder) GetRequest() (*http.Request, error) {
+func (r *httpRequestBuilder) Build() (*http.Request, error) {
 	req, err := http.NewRequest(r.method, r.getUrlWithParameter(), r.body)
 	if err != nil {
 		return nil, err

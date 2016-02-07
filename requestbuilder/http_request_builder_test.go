@@ -21,7 +21,7 @@ func TestImplementsHttpRequestBuilder(t *testing.T) {
 func TestGetRequestWithHeader(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
 	r.AddHeader("a", "b")
-	request, err := r.GetRequest()
+	request, err := r.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +45,7 @@ func TestGetRequestWithHeader(t *testing.T) {
 
 func TestGetRequest(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
-	request, err := r.GetRequest()
+	request, err := r.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestGetRequest(t *testing.T) {
 
 func TestDefaultMethodIsGet(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
-	request, err := r.GetRequest()
+	request, err := r.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func TestDefaultMethodIsGet(t *testing.T) {
 func TestSetMethod(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
 	r.SetMethod("POST")
-	request, err := r.GetRequest()
+	request, err := r.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func TestSetMethod(t *testing.T) {
 func TestSetBody(t *testing.T) {
 	r := NewHttpRequestBuilder("http://www.benjamin-borbe.de")
 	r.SetBody(strings.NewReader("hello world"))
-	request, err := r.GetRequest()
+	request, err := r.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
