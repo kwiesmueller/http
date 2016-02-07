@@ -1,4 +1,4 @@
-# http
+# Http
 
 Package provide http util in Go
 
