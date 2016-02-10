@@ -6,8 +6,10 @@ import (
 
 	"net/url"
 
+	"bytes"
+	"io/ioutil"
+
 	. "github.com/bborbe/assert"
-	io_mock "github.com/bborbe/io/mock"
 )
 
 func TestResponseToByteArray(t *testing.T) {
@@ -15,7 +17,7 @@ func TestResponseToByteArray(t *testing.T) {
 	var content []byte
 
 	response := new(http.Response)
-	response.Body = io_mock.NewReadCloserString("test")
+	response.Body = ioutil.NopCloser(bytes.NewBufferString("test"))
 
 	if content, err = ResponseToByteArray(response); err != nil {
 		t.Fatal(err)
@@ -31,7 +33,7 @@ func TestResponseToString(t *testing.T) {
 	var content string
 
 	response := new(http.Response)
-	response.Body = io_mock.NewReadCloserString("test")
+	response.Body = ioutil.NopCloser(bytes.NewBufferString("test"))
 
 	if content, err = ResponseToString(response); err != nil {
 		t.Fatal(err)
