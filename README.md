@@ -10,10 +10,6 @@ Package provide http util in Go
 
 `go get github.com/bborbe/http/bin/grep_urls`
 
-## Documentation
-
-http://godoc.org/github.com/bborbe/http
-
 ## Copyright and license
 
     Copyright (c) 2016, Benjamin Borbe <bborbe@rocketnews.de>
