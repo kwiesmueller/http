@@ -16,7 +16,7 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	TIMEOUT             = 30 * time.Second
+	DEFAULT_TIMEOUT     = 30 * time.Second
 	KEEPALIVE           = 30 * time.Second
 	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
@@ -28,11 +28,13 @@ type HttpClientBuilder interface {
 	WithoutProxy() HttpClientBuilder
 	WithRedirects() HttpClientBuilder
 	WithoutRedirects() HttpClientBuilder
+	WithTimeout(timeout time.Duration) HttpClientBuilder
 }
 
 type httpClientBuilder struct {
 	proxy         Proxy
 	checkRedirect CheckRedirect
+	timeout       time.Duration
 }
 
 type Proxy func(req *http.Request) (*url.URL, error)
@@ -43,13 +45,19 @@ func New() *httpClientBuilder {
 	b := new(httpClientBuilder)
 	b.WithoutProxy()
 	b.WithRedirects()
+	b.timeout = DEFAULT_TIMEOUT
 	return b
+}
+
+func (h *httpClientBuilder) WithTimeout(timeout time.Duration) HttpClientBuilder {
+	h.timeout = timeout
+	return h
 }
 
 func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
 	logger.Debugf("build http transport")
 	dialFunc := (&net.Dialer{
-		Timeout: TIMEOUT,
+		Timeout: b.timeout,
 		//		KeepAlive: KEEPALIVE,
 	}).Dial
 	return &http.Transport{
