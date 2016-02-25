@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -21,18 +22,21 @@ var contentTypeToExt = map[string]string{
 	"image/png":  "png",
 }
 
-func FindFileExtension(response *http.Response) string {
+func FindFileExtension(response *http.Response) (string, error) {
+	var ext string
 	if response.Request != nil && response.Request.URL != nil {
 		path := response.Request.URL.Path
 		pos := strings.LastIndex(path, ".")
 		if pos > 0 {
-			return path[pos+1:]
+			ext = path[pos+1:]
 		}
 	}
 	if response.Header != nil {
 		contentType := response.Header.Get("Content-Type")
-		return contentTypeToExt[contentType]
-
+		ext = contentTypeToExt[contentType]
 	}
-	return ""
+	if len(ext) == 0 {
+		return "", fmt.Errorf("find extension failed")
+	}
+	return ext, nil
 }

@@ -48,7 +48,11 @@ func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
 func createFilename(content []byte, response *http.Response, directory *os.File) string {
 	logger.Debugf("createFilename")
 	md5string := createMd5Checksum(content)
-	ext := http_util.FindFileExtension(response)
+	ext, err := http_util.FindFileExtension(response)
+	if err != nil {
+		logger.Debugf("can't find file extension")
+		return fmt.Sprintf("%s%c%s", directory.Name(), os.PathSeparator, md5string)
+	}
 	return fmt.Sprintf("%s%c%s.%s", directory.Name(), os.PathSeparator, md5string, ext)
 }
 
