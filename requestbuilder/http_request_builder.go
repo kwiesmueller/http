@@ -17,13 +17,13 @@ type HttpRequestBuilder interface {
 }
 
 type httpRequestBuilder struct {
-	url       string
-	parameter map[string][]string
-	header    http.Header
-	method    string
-	body      io.Reader
-	username  string
-	password  string
+	url           string
+	parameter     map[string][]string
+	header        http.Header
+	method        string
+	body          io.Reader
+	username      string
+	password      string
 	contentLength int64
 }
 
