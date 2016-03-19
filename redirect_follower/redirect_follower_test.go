@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"net/url"
+
 	. "github.com/bborbe/assert"
 	"github.com/bborbe/http/client_builder"
 	"github.com/bborbe/http/requestbuilder"
@@ -93,5 +95,26 @@ func TestIntegrated(t *testing.T) {
 	if err = AssertThat(response.StatusCode/100, Is(2)); err != nil {
 		t.Fatal(err)
 	}
+}
 
+func TestLocationToUrlRelativLocation(t *testing.T) {
+	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
+	result, err := locationToUrl(u, "/denied")
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(result.String(), Is("http://www.benjamin-borbe.de/denied")); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestLocationToUrlAbsolutLocation(t *testing.T) {
+	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
+	result, err := locationToUrl(u, "http://www.example.com/news")
+	if err = AssertThat(err, NilValue()); err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(result.String(), Is("http://www.example.com/news")); err != nil {
+		t.Fatal(err)
+	}
 }

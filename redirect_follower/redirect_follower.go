@@ -52,7 +52,7 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 			return nil, fmt.Errorf("redirect failed")
 		}
 		logger.Debugf("redirect to %s", location[0])
-		p.URL, err = url.Parse(location[0])
+		p.URL, err = locationToUrl(req.URL, location[0])
 		if err != nil {
 			return nil, nil
 		}
@@ -61,4 +61,11 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 	}
 
 	return resp, nil
+}
+
+func locationToUrl(u *url.URL, location string) (*url.URL, error) {
+	if location[0] == '/' {
+		location = fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, location)
+	}
+	return url.Parse(location)
 }
