@@ -108,6 +108,14 @@ func TestLocationToUrlRelativLocation(t *testing.T) {
 	}
 }
 
+func TestLocationToUrlEmptyLocation(t *testing.T) {
+	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
+	_, err := locationToUrl(u, "")
+	if err = AssertThat(err, NotNilValue()); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestLocationToUrlAbsolutLocation(t *testing.T) {
 	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
 	result, err := locationToUrl(u, "http://www.example.com/news")
