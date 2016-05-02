@@ -66,7 +66,7 @@ func TestFailure(t *testing.T) {
 	if err := AssertThat(resultErr, Is(expectedError)); err != nil {
 		t.Fatal(err)
 	}
-	if err := AssertThat(resultResponse == nil, Is(true)); err != nil {
+	if err := AssertThat(resultResponse, NilValue()); err != nil {
 		t.Fatal(err)
 	}
 	if err := AssertThat(parameterRequest, Is(expectedRequest)); err != nil {
