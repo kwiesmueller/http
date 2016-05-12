@@ -46,7 +46,7 @@ func ParseAuthorizationHttpRequest(authtype string, req *http.Request) (string, 
 	if len(authorizations) != 1 {
 		return "", "", fmt.Errorf("header Authorization invalid")
 	}
-	return ParseAuthorizationHeader("Bearer", authorizations[0])
+	return ParseAuthorizationHeader(authtype, authorizations[0])
 }
 
 func ParseAuthorizationHeader(authtype string, header string) (string, string, error) {
