@@ -60,4 +60,3 @@ func ParseAuthorizationHeader(authtype string, header string) (string, string, e
 	}
 	return ParseAuthorizationToken(tokens[1])
 }
-
