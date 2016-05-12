@@ -1,4 +1,4 @@
-package bearer
+package header
 
 import (
 	"testing"
@@ -7,8 +7,8 @@ import (
 )
 
 func TestCreateParseBearer(t *testing.T) {
-	header := CreateBearerHeader("foo", "bar")
-	name, value, err := ParseBearerHeader(header)
+	header := CreateAuthorizationBearerHeader("foo", "bar")
+	name, value, err := ParseAuthorizationHeader("Bearer", header)
 	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
