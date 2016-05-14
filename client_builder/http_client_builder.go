@@ -16,10 +16,12 @@ import (
 var logger = log.DefaultLogger
 
 const (
-	DEFAULT_TIMEOUT     = 30 * time.Second
-	KEEPALIVE           = 30 * time.Second
+	DEFAULT_TIMEOUT = 30 * time.Second
+	KEEPALIVE = 30 * time.Second
 	TLSHANDSHAKETIMEOUT = 10 * time.Second
 )
+
+type DialFunc func(network, address string) (net.Conn, error)
 
 type HttpClientBuilder interface {
 	Build() *http.Client
@@ -29,12 +31,14 @@ type HttpClientBuilder interface {
 	WithRedirects() HttpClientBuilder
 	WithoutRedirects() HttpClientBuilder
 	WithTimeout(timeout time.Duration) HttpClientBuilder
+	WithDialFunc(dialFunc DialFunc) HttpClientBuilder
 }
 
 type httpClientBuilder struct {
 	proxy         Proxy
 	checkRedirect CheckRedirect
 	timeout       time.Duration
+	dialFunc      DialFunc
 }
 
 type Proxy func(req *http.Request) (*url.URL, error)
@@ -54,15 +58,26 @@ func (h *httpClientBuilder) WithTimeout(timeout time.Duration) HttpClientBuilder
 	return h
 }
 
-func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
-	logger.Debugf("build http transport")
-	dialFunc := (&net.Dialer{
+func (h *httpClientBuilder) WithDialFunc(dialFunc DialFunc) HttpClientBuilder {
+	h.dialFunc = dialFunc
+	return h
+}
+
+func (b *httpClientBuilder) BuildDialFunc() DialFunc {
+	if b.dialFunc != nil {
+		return b.dialFunc
+	}
+	return (&net.Dialer{
 		Timeout: b.timeout,
 		//		KeepAlive: KEEPALIVE,
 	}).Dial
+}
+
+func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
+	logger.Debugf("build http transport")
 	return &http.Transport{
 		Proxy:           b.proxy,
-		Dial:            dialFunc,
+		Dial:            b.BuildDialFunc(),
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		//		TLSHandshakeTimeout: TLSHANDSHAKETIMEOUT,
 	}
