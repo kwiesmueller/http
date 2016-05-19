@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/bborbe/log"
 )
 
@@ -61,10 +62,15 @@ func PrintDump(w http.ResponseWriter, r *http.Request, write bool) {
 func DecodePostJSON(r *http.Request, logging bool) (map[string]interface{}, error) {
 	var err error
 	var payLoad map[string]interface{}
+	if logging {
+		reader := reader_shadow_copy.New(r.Body)
+		decoder := json.NewDecoder(reader)
+		err = decoder.Decode(&payLoad)
+		logger.Debugf("body: %s", string(reader.Bytes()))
+		logger.Debugf("parsed body: %v", payLoad)
+		return payLoad, err
+	}
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&payLoad)
-	if logging == true {
-		logger.Debugf("Parsed body:%v", payLoad)
-	}
 	return payLoad, err
 }
