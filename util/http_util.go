@@ -51,8 +51,9 @@ func FindFileExtension(response *http.Response) (string, error) {
 
 // PrintDump prints dump of request, optionally writing it in the response
 func PrintDump(request *http.Request) {
+	logger.Debugf("header: %v", request.Header)
 	dump, _ := httputil.DumpRequest(request, true)
-	logger.Debugf("%v", string(dump))
+	logger.Debugf("request: %v", string(dump))
 }
 
 // Decode into a ma[string]interface{} the JSON in the POST Request
