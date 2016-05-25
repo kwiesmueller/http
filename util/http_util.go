@@ -65,7 +65,6 @@ func DecodePostJSON(request *http.Request, logging bool) (map[string]interface{}
 		decoder := json.NewDecoder(reader)
 		err = decoder.Decode(&payLoad)
 		logger.Debugf("body: %s", string(reader.Bytes()))
-		logger.Debugf("parsed body: %v", payLoad)
 		return payLoad, err
 	}
 	decoder := json.NewDecoder(request.Body)
