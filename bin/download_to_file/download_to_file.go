@@ -61,9 +61,9 @@ func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync
 	if targetDirectoryName, err = io_util.NormalizePath(targetDirectoryName); err != nil {
 		return err
 	}
-	if err = io_util.IsDirectory(targetDirectoryName); err != nil {
+	if isDir,err := io_util.IsDirectory(targetDirectoryName); err != nil || isDir == false {
 		fmt.Fprintf(writer, "parameter %s is invalid\n", PARAMETER_TARGET)
-		return err
+		return fmt.Errorf("parameter is not a directory")
 	}
 	targetDirectory, err := os.Open(targetDirectoryName)
 	if err != nil {
