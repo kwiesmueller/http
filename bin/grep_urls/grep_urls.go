@@ -12,20 +12,26 @@ import (
 	"fmt"
 
 	"github.com/bborbe/log"
+	"runtime"
 )
-
-var logger = log.DefaultLogger
 
 const (
 	PARAMETER_LOGLEVEL = "loglevel"
 )
 
+var (
+	logger      = log.DefaultLogger
+	logLevelPtr = flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, log.FLAG_USAGE)
+)
+
 func main() {
 	defer logger.Close()
-	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, log.FLAG_USAGE)
 	flag.Parse()
+
 	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
 	logger.Debugf("set log level to %s", *logLevelPtr)
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	writer := os.Stdout
 	input := os.Stdin
