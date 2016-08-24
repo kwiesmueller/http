@@ -1,0 +1,19 @@
+hash: 9491d148ea81eda1f1336f713402ad547c5d98d4ed4e642760b06763cdcd4ad7
+updated: 2016-08-24T22:52:13.324921921+02:00
+imports:
+- name: github.com/bborbe/crawler
+  version: e67f8005e071ed5a2090e9395484d42ae04a85d3
+  subpackages:
+  - linkparser
+- name: github.com/bborbe/io
+  version: 56d91e8345e4418981a56bc4b8466b4096138f08
+  subpackages:
+  - file_writer
+  - reader_shadow_copy
+  - util
+  - buffered_writer
+- name: github.com/bborbe/log
+  version: 0250bb5b2e2bd833cb9a47333c28aa46751cdbfe
+testImports:
+- name: github.com/bborbe/assert
+  version: cd6d0ec67c40ced8ca6cf72773b9e4b44420fbd2
