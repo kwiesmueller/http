@@ -90,5 +90,4 @@ func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync
 			wg.Done()
 		}()
 	}
-	return nil
 }
