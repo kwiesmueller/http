@@ -58,7 +58,6 @@ func do(writer io.Writer, input io.Reader) error {
 			return err
 		}
 	}
-	return nil
 }
 
 func downloadLink(writer io.Writer, url string) error {
