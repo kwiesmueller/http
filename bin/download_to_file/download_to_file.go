@@ -83,7 +83,9 @@ func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync
 		go func() {
 			link := string(line)
 			throttle <- true
-			downloader.Download(link, targetDirectory)
+			if err := downloader.Download(link, targetDirectory); err != nil {
+				logger.Warnf("download failed: %v", err)
+			}
 			<-throttle
 			wg.Done()
 		}()

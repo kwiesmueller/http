@@ -27,7 +27,7 @@ type httpRequestBuilder struct {
 	contentLength int64
 }
 
-func NewHttpRequestBuilder(url string) *httpRequestBuilder {
+func NewHTTPRequestBuilder(url string) *httpRequestBuilder {
 	r := new(httpRequestBuilder)
 	r.method = "GET"
 	r.url = url

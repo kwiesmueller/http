@@ -1,17 +1,17 @@
 package requestbuilder
 
-type HttpRequestBuilderProvider interface {
-	NewHttpRequestBuilder(url string) HttpRequestBuilder
+type HTTPRequestBuilderProvider interface {
+	NewHTTPRequestBuilder(url string) HttpRequestBuilder
 }
 
 type httpRequestBuilderProvider struct {
 }
 
-func NewHttpRequestBuilderProvider() *httpRequestBuilderProvider {
+func NewHTTPRequestBuilderProvider() *httpRequestBuilderProvider {
 	p := new(httpRequestBuilderProvider)
 	return p
 }
 
-func (p *httpRequestBuilderProvider) NewHttpRequestBuilder(url string) HttpRequestBuilder {
-	return NewHttpRequestBuilder(url)
+func (p *httpRequestBuilderProvider) NewHTTPRequestBuilder(url string) HttpRequestBuilder {
+	return NewHTTPRequestBuilder(url)
 }

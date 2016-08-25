@@ -75,7 +75,9 @@ func downloadLink(writer io.Writer, url string) error {
 		logger.Debugf("%s", string(content))
 		return errors.New(string(content))
 	}
-	io.Copy(writer, response.Body)
+	if _, err := io.Copy(writer, response.Body); err != nil {
+		return err
+	}
 	logger.Debugf("download %s finished", url)
 	return nil
 }

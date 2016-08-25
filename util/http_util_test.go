@@ -23,7 +23,7 @@ func TestResponseToByteArray(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = AssertThat(string(content), Is("test")); err != nil {
+	if err := AssertThat(string(content), Is("test")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -39,7 +39,7 @@ func TestResponseToString(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = AssertThat(content, Is("test")); err != nil {
+	if err := AssertThat(content, Is("test")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -48,10 +48,10 @@ func TestFindFileExtension(t *testing.T) {
 	var err error
 	response := &http.Response{}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NotNilValue()); err != nil {
+	if err := AssertThat(err, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("")); err != nil {
+	if err := AssertThat(ext, Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -64,10 +64,10 @@ func TestFindFileExtensionUrlWithDot(t *testing.T) {
 	}
 	response := &http.Response{Request: &http.Request{URL: u}}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NilValue()); err != nil {
+	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("txt")); err != nil {
+	if err := AssertThat(ext, Is("txt")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -80,10 +80,10 @@ func TestFindFileExtensionUrlWithDotAtLast(t *testing.T) {
 	}
 	response := &http.Response{Request: &http.Request{URL: u}}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NotNilValue()); err != nil {
+	if err := AssertThat(err, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("")); err != nil {
+	if err := AssertThat(ext, Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -92,10 +92,10 @@ func TestFindFileExtensionHeader(t *testing.T) {
 	var err error
 	response := &http.Response{Header: http.Header{}}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NotNilValue()); err != nil {
+	if err := AssertThat(err, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("")); err != nil {
+	if err := AssertThat(ext, Is("")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -104,10 +104,10 @@ func TestFindFileExtensionHeaderContentTypeKownType(t *testing.T) {
 	var err error
 	response := &http.Response{Header: http.Header{"Content-Type": []string{"image/jpeg"}}}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NilValue()); err != nil {
+	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("jpg")); err != nil {
+	if err := AssertThat(ext, Is("jpg")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -116,10 +116,10 @@ func TestFindFileExtensionHeaderContentTypeUnkownType(t *testing.T) {
 	var err error
 	response := &http.Response{Header: http.Header{"Content-Type": []string{"text/foo"}}}
 	ext, err := FindFileExtension(response)
-	if err = AssertThat(err, NotNilValue()); err != nil {
+	if err := AssertThat(err, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(ext, Is("")); err != nil {
+	if err := AssertThat(ext, Is("")); err != nil {
 		t.Fatal(err)
 	}
 }

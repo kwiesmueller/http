@@ -46,8 +46,9 @@ func main() {
 
 func do(writer io.Writer, input io.Reader) error {
 	contentBuffer := bytes.NewBuffer(nil)
-	io.Copy(contentBuffer, input)
-
+	if _, err := io.Copy(contentBuffer, input); err != nil {
+		return err
+	}
 	linkparser := crawler_linkparser.New()
 	links := linkparser.ParseAbsolute(string(contentBuffer.Bytes()))
 	for match := range links {

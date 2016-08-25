@@ -80,19 +80,19 @@ func TestIntegrated(t *testing.T) {
 	}
 	httpClientBuilder := client_builder.New()
 	b := New(httpClientBuilder.BuildRoundTripper().RoundTrip)
-	rb := requestbuilder.NewHttpRequestBuilder("http://www.benjamin-borbe.de")
+	rb := requestbuilder.NewHTTPRequestBuilder("http://www.benjamin-borbe.de")
 	request, err := rb.Build()
 	if err != nil {
 		t.Fatal(err)
 	}
 	response, err := b.ExecuteRequestAndFollow(request)
-	if err = AssertThat(err, NilValue()); err != nil {
+	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(response, NotNilValue()); err != nil {
+	if err := AssertThat(response, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(response.StatusCode/100, Is(2)); err != nil {
+	if err := AssertThat(response.StatusCode/100, Is(2)); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -100,10 +100,10 @@ func TestIntegrated(t *testing.T) {
 func TestLocationToUrlRelativLocation(t *testing.T) {
 	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
 	result, err := locationToUrl(u, "/denied")
-	if err = AssertThat(err, NilValue()); err != nil {
+	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(result.String(), Is("http://www.benjamin-borbe.de/denied")); err != nil {
+	if err := AssertThat(result.String(), Is("http://www.benjamin-borbe.de/denied")); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -111,7 +111,7 @@ func TestLocationToUrlRelativLocation(t *testing.T) {
 func TestLocationToUrlEmptyLocation(t *testing.T) {
 	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
 	_, err := locationToUrl(u, "")
-	if err = AssertThat(err, NotNilValue()); err != nil {
+	if err := AssertThat(err, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -119,10 +119,10 @@ func TestLocationToUrlEmptyLocation(t *testing.T) {
 func TestLocationToUrlAbsolutLocation(t *testing.T) {
 	u, _ := url.Parse("http://www.benjamin-borbe.de/test/login")
 	result, err := locationToUrl(u, "http://www.example.com/news")
-	if err = AssertThat(err, NilValue()); err != nil {
+	if err := AssertThat(err, NilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err = AssertThat(result.String(), Is("http://www.example.com/news")); err != nil {
+	if err := AssertThat(result.String(), Is("http://www.example.com/news")); err != nil {
 		t.Fatal(err)
 	}
 }

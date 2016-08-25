@@ -6,19 +6,19 @@ import (
 	. "github.com/bborbe/assert"
 )
 
-func TestImplementsNewHttpRequestBuilderProvider(t *testing.T) {
-	p := NewHttpRequestBuilderProvider()
-	var i *HttpRequestBuilderProvider
+func TestImplementsNewHTTPRequestBuilderProvider(t *testing.T) {
+	p := NewHTTPRequestBuilderProvider()
+	var i *HTTPRequestBuilderProvider
 	err := AssertThat(p, Implements(i))
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestNewHttpRequestBuilder(t *testing.T) {
+func TestNewHTTPRequestBuilder(t *testing.T) {
 	var err error
-	p := NewHttpRequestBuilderProvider()
-	rb := p.NewHttpRequestBuilder("http://example.com")
+	p := NewHTTPRequestBuilderProvider()
+	rb := p.NewHTTPRequestBuilder("http://example.com")
 	err = AssertThat(rb, NotNilValue())
 	if err != nil {
 		t.Fatal(err)

@@ -55,9 +55,15 @@ func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 		logger.Errorf("open '%s' failed", filename)
 		return err
 	}
-	io.Copy(writer, response.Body)
-	writer.Flush()
-	writer.Close()
+	if _, err := io.Copy(writer, response.Body); err != nil {
+		return err
+	}
+	if err := writer.Flush(); err != nil {
+		return err
+	}
+	if err := writer.Close(); err != nil {
+		return err
+	}
 	logger.Debugf("download %s finished", url)
 	return nil
 }
