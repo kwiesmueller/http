@@ -5,12 +5,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 )
 
 const LIMIT = 10
-
-var logger = log.DefaultLogger
 
 type ExecuteRequest func(req *http.Request) (resp *http.Response, err error)
 
@@ -33,15 +31,15 @@ func (r *redirectFollower) ExecuteRequestAndFollow(req *http.Request) (*http.Res
 }
 
 func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, counter int) (*http.Response, error) {
-	logger.Debugf("execute request to %s", req.URL)
-	logger.Debugf("request %v\n", req)
+	glog.V(2).Infof("execute request to %s", req.URL)
+	glog.V(2).Infof("request %v\n", req)
 	resp, err := executeRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	logger.Debugf("response %v", resp)
+	glog.V(2).Infof("response %v", resp)
 	if resp.StatusCode/100 == 3 {
-		logger.Debugf("redirect - statuscode: %d", resp.StatusCode)
+		glog.V(2).Infof("redirect - statuscode: %d", resp.StatusCode)
 		if counter > LIMIT {
 			return nil, fmt.Errorf("redirect limit reached")
 		}
@@ -51,7 +49,7 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 		if len(location) != 1 {
 			return nil, fmt.Errorf("redirect failed")
 		}
-		logger.Debugf("redirect to %s", location[0])
+		glog.V(2).Infof("redirect to %s", location[0])
 		p.URL, err = locationToUrl(req.URL, location[0])
 		if err != nil {
 			return nil, err

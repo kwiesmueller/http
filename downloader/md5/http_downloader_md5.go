@@ -9,10 +9,8 @@ import (
 
 	http_util "github.com/bborbe/http/util"
 	io_file_writer "github.com/bborbe/io/file_writer"
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 )
-
-var logger = log.DefaultLogger
 
 type GetUrl func(url string) (resp *http.Response, err error)
 
@@ -31,7 +29,7 @@ func (d *downloaderMd5) Download(url string, targetDirectory *os.File) error {
 }
 
 func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
-	logger.Debugf("download %s to directory %s", url, targetDirectory.Name())
+	glog.V(2).Infof("download %s to directory %s", url, targetDirectory.Name())
 	response, err := getUrl(url)
 	if err != nil {
 		return err
@@ -41,30 +39,30 @@ func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
 		return err
 	}
 	filename := createFilename(content, response, targetDirectory)
-	logger.Debugf("filename: %s", filename)
+	glog.V(2).Infof("filename: %s", filename)
 	return saveToFile(content, filename)
 }
 
 func createFilename(content []byte, response *http.Response, directory *os.File) string {
-	logger.Debugf("createFilename")
+	glog.V(2).Infof("createFilename")
 	md5string := createMd5Checksum(content)
 	ext, err := http_util.FindFileExtension(response)
 	if err != nil {
-		logger.Debugf("can't find file extension")
+		glog.V(2).Infof("can't find file extension")
 		return fmt.Sprintf("%s%c%s", directory.Name(), os.PathSeparator, md5string)
 	}
 	return fmt.Sprintf("%s%c%s.%s", directory.Name(), os.PathSeparator, md5string, ext)
 }
 
 func createMd5Checksum(content []byte) string {
-	logger.Debugf("create md5 checksum")
+	glog.V(2).Infof("create md5 checksum")
 	hasher := md5.New()
 	hasher.Write(content)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func saveToFile(content []byte, filename string) error {
-	logger.Debugf("save content to %s", filename)
+	glog.V(2).Infof("save content to %s", filename)
 	writer, err := io_file_writer.NewFileWriter(filename)
 	defer writer.Close()
 	if err != nil {

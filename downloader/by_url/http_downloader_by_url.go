@@ -10,10 +10,8 @@ import (
 	"regexp"
 
 	io_file_writer "github.com/bborbe/io/file_writer"
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 )
-
-var logger = log.DefaultLogger
 
 type GetUrl func(url string) (resp *http.Response, err error)
 
@@ -32,7 +30,7 @@ func (d *downloaderByUrl) Download(url string, targetDirectory *os.File) error {
 }
 
 func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
-	logger.Debugf("download %s started", url)
+	glog.V(2).Infof("download %s started", url)
 	response, err := getUrl(url)
 	if err != nil {
 		return err
@@ -42,17 +40,17 @@ func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 		if err != nil {
 			return err
 		}
-		logger.Debugf("%s", string(content))
+		glog.V(2).Infof("%s", string(content))
 		return errors.New(string(content))
 	}
 
 	targetDirectory.Name()
 
 	filename := createFilename(url)
-	logger.Debugf("to %s", filename)
+	glog.V(2).Infof("to %s", filename)
 	writer, err := io_file_writer.NewFileWriter(fmt.Sprintf("%s/%s", targetDirectory.Name(), filename))
 	if err != nil {
-		logger.Errorf("open '%s' failed", filename)
+		glog.Errorf("open '%s' failed", filename)
 		return err
 	}
 	if _, err := io.Copy(writer, response.Body); err != nil {
@@ -64,7 +62,7 @@ func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 	if err := writer.Close(); err != nil {
 		return err
 	}
-	logger.Debugf("download %s finished", url)
+	glog.V(2).Infof("download %s finished", url)
 	return nil
 }
 

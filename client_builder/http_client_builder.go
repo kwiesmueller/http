@@ -10,10 +10,8 @@ import (
 
 	"errors"
 
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 )
-
-var logger = log.DefaultLogger
 
 const (
 	DEFAULT_TIMEOUT     = 30 * time.Second
@@ -74,7 +72,7 @@ func (b *httpClientBuilder) BuildDialFunc() DialFunc {
 }
 
 func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
-	logger.Debugf("build http transport")
+	glog.V(2).Infof("build http transport")
 	return &http.Transport{
 		Proxy:           b.proxy,
 		Dial:            b.BuildDialFunc(),
@@ -84,7 +82,7 @@ func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
 }
 
 func (b *httpClientBuilder) Build() *http.Client {
-	logger.Debugf("build http client")
+	glog.V(2).Infof("build http client")
 	return &http.Client{
 		Transport:     b.BuildRoundTripper(),
 		CheckRedirect: b.checkRedirect,

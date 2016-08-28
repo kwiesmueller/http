@@ -13,34 +13,20 @@ import (
 
 	"runtime"
 
-	"github.com/bborbe/log"
-)
-
-const (
-	PARAMETER_LOGLEVEL = "loglevel"
-)
-
-var (
-	logger      = log.DefaultLogger
-	logLevelPtr = flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, log.FLAG_USAGE)
+	"github.com/golang/glog"
 )
 
 func main() {
-	defer logger.Close()
+	defer glog.Flush()
+	glog.CopyStandardLogTo("info")
 	flag.Parse()
-
-	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
-	logger.Debugf("set log level to %s", *logLevelPtr)
-
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	writer := os.Stdout
 	input := os.Stdin
 	err := do(writer, input)
 	if err != nil {
-		logger.Fatal(err)
-		logger.Close()
-		os.Exit(1)
+		glog.Exit(err)
 	}
 }
 

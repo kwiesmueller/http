@@ -8,6 +8,6 @@ import:
   - file_writer
   - reader_shadow_copy
   - util
-- package: github.com/bborbe/log
+- package: github.com/golang/glog
 testImport:
 - package: github.com/bborbe/assert

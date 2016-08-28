@@ -7,7 +7,7 @@ import (
 	"flag"
 	"io"
 
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 
 	"fmt"
 	"runtime"
@@ -19,25 +19,22 @@ import (
 	io_util "github.com/bborbe/io/util"
 )
 
-var logger = log.DefaultLogger
-
 const (
-	PARAMETER_LOGLEVEL           = "loglevel"
 	PARAMETER_PARALLEL_DOWNLOADS = "max"
 	PARAMETER_TARGET             = "target"
 	DEFAULT_PARALLEL_DOWNLOADS   = 2
 	DEFAULT_TARGET               = "~/Downloads"
 )
 
-func main() {
-	defer logger.Close()
-	logLevelPtr := flag.String(PARAMETER_LOGLEVEL, log.INFO_STRING, log.FLAG_USAGE)
-	maxConcurrencyDownloadsPtr := flag.Int(PARAMETER_PARALLEL_DOWNLOADS, DEFAULT_PARALLEL_DOWNLOADS, "max parallel downloads")
-	targetDirectoryPtr := flag.String(PARAMETER_TARGET, DEFAULT_TARGET, "directory")
-	flag.Parse()
-	logger.SetLevelThreshold(log.LogStringToLevel(*logLevelPtr))
-	logger.Debugf("set log level to %s", *logLevelPtr)
+var (
+	maxConcurrencyDownloadsPtr = flag.Int(PARAMETER_PARALLEL_DOWNLOADS, DEFAULT_PARALLEL_DOWNLOADS, "max parallel downloads")
+	targetDirectoryPtr         = flag.String(PARAMETER_TARGET, DEFAULT_TARGET, "directory")
+)
 
+func main() {
+	defer glog.Flush()
+	glog.CopyStandardLogTo("info")
+	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	writer := os.Stdout
@@ -50,9 +47,7 @@ func main() {
 	err := do(writer, input, *maxConcurrencyDownloadsPtr, wg, downloader, *targetDirectoryPtr)
 	wg.Wait()
 	if err != nil {
-		logger.Fatal(err)
-		logger.Close()
-		os.Exit(1)
+		glog.Exit(err)
 	}
 }
 
@@ -84,7 +79,7 @@ func do(writer io.Writer, input io.Reader, maxConcurrencyDownloads int, wg *sync
 			link := string(line)
 			throttle <- true
 			if err := downloader.Download(link, targetDirectory); err != nil {
-				logger.Warnf("download failed: %v", err)
+				glog.Warningf("download failed: %v", err)
 			}
 			<-throttle
 			wg.Done()

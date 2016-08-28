@@ -6,22 +6,20 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bborbe/log"
+	"github.com/golang/glog"
 )
 
-var logger = log.DefaultLogger
-
 func CreateAuthorizationToken(name string, value string) string {
-	logger.Debugf("create bearer from: %s:%s", name, value)
+	glog.V(2).Infof("create bearer from: %s:%s", name, value)
 	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", name, value)))
 }
 func CreateAuthorizationTokenSimple(name string) string {
-	logger.Debugf("create bearer from: %s", name)
+	glog.V(2).Infof("create bearer from: %s", name)
 	return base64.StdEncoding.EncodeToString([]byte(name))
 }
 
 func ParseAuthorizationToken(token string) (string, string, error) {
-	logger.Debugf("parse token: %s", token)
+	glog.V(2).Infof("parse token: %s", token)
 	value, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
 		return "", "", err
@@ -34,7 +32,7 @@ func ParseAuthorizationToken(token string) (string, string, error) {
 }
 
 func ParseAuthorizationTokenSimple(token string) (string, error) {
-	logger.Debugf("parse token: %s", token)
+	glog.V(2).Infof("parse token: %s", token)
 	value, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
 		return "", err
@@ -79,7 +77,7 @@ func ParseAuthorizationHttpRequestSimple(authtype string, req *http.Request) (st
 }
 
 func ParseAuthorizationHeader(authtype string, header string) (string, string, error) {
-	logger.Debugf("parse %s: %s", authtype, header)
+	glog.V(2).Infof("parse %s: %s", authtype, header)
 	if strings.Index(header, fmt.Sprintf("%s ", authtype)) != 0 {
 		return "", "", fmt.Errorf("header Authorization invalid")
 	}
@@ -91,7 +89,7 @@ func ParseAuthorizationHeader(authtype string, header string) (string, string, e
 }
 
 func ParseAuthorizationHeaderSimple(authtype string, header string) (string, error) {
-	logger.Debugf("parse %s: %s", authtype, header)
+	glog.V(2).Infof("parse %s: %s", authtype, header)
 	if strings.Index(header, fmt.Sprintf("%s ", authtype)) != 0 {
 		return "", fmt.Errorf("header Authorization invalid")
 	}
