@@ -92,7 +92,7 @@ func TestIntegrated(t *testing.T) {
 	if err := AssertThat(response, NotNilValue()); err != nil {
 		t.Fatal(err)
 	}
-	if err := AssertThat(response.StatusCode/100, Is(2)); err != nil {
+	if err := AssertThat(response.StatusCode, Is(200)); err != nil {
 		t.Fatal(err)
 	}
 }
