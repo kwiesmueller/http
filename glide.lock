@@ -1,12 +1,12 @@
 hash: 973618b023af8fb89d7692d50bdf62e2266cee4845174b4974d2d72a83584666
-updated: 2016-08-29T00:11:36.927683554+02:00
+updated: 2016-09-08T15:14:20.250323686+02:00
 imports:
 - name: github.com/bborbe/crawler
-  version: 74763a40636d3090ba5b65fff8f40c760cea3984
+  version: ad10b1d8f25c2cd62c374334fe2755a7cec6ceac
   subpackages:
   - linkparser
 - name: github.com/bborbe/io
-  version: 5891c542e99ec05e63ac475bc8a2202b2fca02aa
+  version: c2c48bf5bd136037d775f6fabe5caaba93b341b5
   subpackages:
   - file_writer
   - reader_shadow_copy
@@ -15,4 +15,4 @@ imports:
   version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
 testImports:
 - name: github.com/bborbe/assert
-  version: 639eac9a24e3c01472758f3c79452b8517bc29f6
+  version: 2db035a4c0870f6f48d1955f7b9542f9dbd4fb64
