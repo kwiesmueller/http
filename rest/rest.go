@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang/glog"
 	"io"
+
+	"github.com/golang/glog"
 )
 
 type executeRequest func(req *http.Request) (resp *http.Response, err error)
