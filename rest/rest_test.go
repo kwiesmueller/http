@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestImplementsRest(t *testing.T) {
-	c := New(nil, nil)
+	c := New(nil)
 	var i *Rest
 	if err := AssertThat(c, Implements(i)); err != nil {
 		t.Fatal(err)

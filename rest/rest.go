@@ -7,15 +7,14 @@ import (
 	"net/http"
 	"time"
 
-	http_requestbuilder "github.com/bborbe/http/requestbuilder"
 	"github.com/golang/glog"
+	"io"
 )
 
 type executeRequest func(req *http.Request) (resp *http.Response, err error)
 
 type rest struct {
-	httpRequestBuilderProvider http_requestbuilder.HTTPRequestBuilderProvider
-	executeRequest             executeRequest
+	executeRequest executeRequest
 }
 
 type Rest interface {
@@ -24,10 +23,8 @@ type Rest interface {
 
 func New(
 	executeRequest executeRequest,
-	httpRequestBuilderProvider http_requestbuilder.HTTPRequestBuilderProvider,
 ) *rest {
 	r := new(rest)
-	r.httpRequestBuilderProvider = httpRequestBuilderProvider
 	r.executeRequest = executeRequest
 	return r
 }
@@ -37,12 +34,8 @@ func (r *rest) Call(url string, method string, request interface{}, response int
 	start := time.Now()
 	defer glog.V(2).Infof("create completed in %dms", time.Now().Sub(start)/time.Millisecond)
 	glog.V(2).Infof("send message to %s", url)
-	requestbuilder := r.httpRequestBuilderProvider.NewHTTPRequestBuilder(url)
-	for key, values := range headers {
-		requestbuilder.AddHeader(key, values...)
-	}
-	requestbuilder.SetMethod(method)
-	requestbuilder.AddContentType("application/json")
+
+	var body io.Reader
 	if request != nil {
 		content, err := json.Marshal(request)
 		if err != nil {
@@ -50,12 +43,18 @@ func (r *rest) Call(url string, method string, request interface{}, response int
 			return err
 		}
 		glog.V(2).Infof("send request to %s: %s", url, string(content))
-		requestbuilder.SetBody(bytes.NewBuffer(content))
+		body = bytes.NewBuffer(content)
 	}
-	req, err := requestbuilder.Build()
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		glog.V(2).Infof("build request failed: %v", err)
 		return err
+	}
+	req.Header.Set("ContentType", "application/json")
+	for key, values := range headers {
+		for _, value := range values {
+			req.Header.Add(key, value)
+		}
 	}
 	resp, err := r.executeRequest(req)
 	if err != nil {
