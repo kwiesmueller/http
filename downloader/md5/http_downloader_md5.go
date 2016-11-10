@@ -29,7 +29,7 @@ func (d *downloaderMd5) Download(url string, targetDirectory *os.File) error {
 }
 
 func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
-	glog.V(2).Infof("download %s to directory %s", url, targetDirectory.Name())
+	glog.V(4).Infof("download %s to directory %s", url, targetDirectory.Name())
 	response, err := getUrl(url)
 	if err != nil {
 		return err
@@ -39,12 +39,12 @@ func download(url string, targetDirectory *os.File, getUrl GetUrl) error {
 		return err
 	}
 	filename := createFilename(content, response, targetDirectory)
-	glog.V(2).Infof("filename: %s", filename)
+	glog.V(4).Infof("filename: %s", filename)
 	return saveToFile(content, filename)
 }
 
 func createFilename(content []byte, response *http.Response, directory *os.File) string {
-	glog.V(2).Infof("createFilename")
+	glog.V(4).Infof("createFilename")
 	md5string := createMd5Checksum(content)
 	ext, err := http_util.FindFileExtension(response)
 	if err != nil {
@@ -55,14 +55,14 @@ func createFilename(content []byte, response *http.Response, directory *os.File)
 }
 
 func createMd5Checksum(content []byte) string {
-	glog.V(2).Infof("create md5 checksum")
+	glog.V(4).Infof("create md5 checksum")
 	hasher := md5.New()
 	hasher.Write(content)
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func saveToFile(content []byte, filename string) error {
-	glog.V(2).Infof("save content to %s", filename)
+	glog.V(4).Infof("save content to %s", filename)
 	writer, err := io_file_writer.NewFileWriter(filename)
 	defer writer.Close()
 	if err != nil {

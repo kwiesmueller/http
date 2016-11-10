@@ -49,9 +49,9 @@ func FindFileExtension(response *http.Response) (string, error) {
 
 // PrintDump prints dump of request, optionally writing it in the response
 func PrintDump(request *http.Request) {
-	glog.V(2).Infof("header: %v", request.Header)
+	glog.V(4).Infof("header: %v", request.Header)
 	dump, _ := httputil.DumpRequest(request, true)
-	glog.V(2).Infof("request: %v", string(dump))
+	glog.V(4).Infof("request: %v", string(dump))
 }
 
 // Decode into a ma[string]interface{} the JSON in the POST Request
@@ -62,7 +62,7 @@ func DecodePostJSON(request *http.Request, logging bool) (map[string]interface{}
 		reader := reader_shadow_copy.New(request.Body)
 		decoder := json.NewDecoder(reader)
 		err = decoder.Decode(&payLoad)
-		glog.V(2).Infof("body: %s", string(reader.Bytes()))
+		glog.V(4).Infof("body: %s", string(reader.Bytes()))
 		return payLoad, err
 	}
 	decoder := json.NewDecoder(request.Body)

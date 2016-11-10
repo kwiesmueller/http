@@ -30,7 +30,7 @@ func (d *downloaderByUrl) Download(url string, targetDirectory *os.File) error {
 }
 
 func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
-	glog.V(2).Infof("download %s started", url)
+	glog.V(4).Infof("download %s started", url)
 	response, err := getUrl(url)
 	if err != nil {
 		return err
@@ -40,14 +40,16 @@ func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 		if err != nil {
 			return err
 		}
-		glog.V(2).Infof("%s", string(content))
+		if glog.V(4) {
+			glog.Infof("%s", string(content))
+		}
 		return errors.New(string(content))
 	}
 
 	targetDirectory.Name()
 
 	filename := createFilename(url)
-	glog.V(2).Infof("to %s", filename)
+	glog.V(4).Infof("to %s", filename)
 	writer, err := io_file_writer.NewFileWriter(fmt.Sprintf("%s/%s", targetDirectory.Name(), filename))
 	if err != nil {
 		glog.Errorf("open '%s' failed", filename)
@@ -62,7 +64,7 @@ func downloadLink(url string, targetDirectory *os.File, getUrl GetUrl) error {
 	if err := writer.Close(); err != nil {
 		return err
 	}
-	glog.V(2).Infof("download %s finished", url)
+	glog.V(4).Infof("download %s finished", url)
 	return nil
 }
 

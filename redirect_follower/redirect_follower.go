@@ -31,15 +31,15 @@ func (r *redirectFollower) ExecuteRequestAndFollow(req *http.Request) (*http.Res
 }
 
 func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, counter int) (*http.Response, error) {
-	glog.V(2).Infof("execute request to %s", req.URL)
-	glog.V(2).Infof("request %v\n", req)
+	glog.V(4).Infof("execute request to %s", req.URL)
+	glog.V(4).Infof("request %v\n", req)
 	resp, err := executeRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	glog.V(2).Infof("response %v", resp)
+	glog.V(4).Infof("response %v", resp)
 	if resp.StatusCode/100 == 3 {
-		glog.V(2).Infof("redirect - statuscode: %d", resp.StatusCode)
+		glog.V(4).Infof("redirect - statuscode: %d", resp.StatusCode)
 		if counter > LIMIT {
 			return nil, fmt.Errorf("redirect limit reached")
 		}
@@ -49,7 +49,7 @@ func executeRequestAndFollow(executeRequest ExecuteRequest, req *http.Request, c
 		if len(location) != 1 {
 			return nil, fmt.Errorf("redirect failed")
 		}
-		glog.V(2).Infof("redirect to %s", location[0])
+		glog.V(4).Infof("redirect to %s", location[0])
 		p.URL, err = locationToUrl(req.URL, location[0])
 		if err != nil {
 			return nil, err

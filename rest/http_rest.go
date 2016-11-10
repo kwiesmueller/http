@@ -31,10 +31,10 @@ func New(
 }
 
 func (r *rest) Call(url string, method string, request interface{}, response interface{}, headers http.Header) error {
-	glog.V(2).Infof("call %s on path %s", method, url)
+	glog.V(4).Infof("call %s on path %s", method, url)
 	start := time.Now()
-	defer glog.V(2).Infof("create completed in %dms", time.Now().Sub(start)/time.Millisecond)
-	glog.V(2).Infof("send message to %s", url)
+	defer glog.V(4).Infof("create completed in %dms", time.Now().Sub(start)/time.Millisecond)
+	glog.V(4).Infof("send message to %s", url)
 
 	var body io.Reader
 	if request != nil {
@@ -43,7 +43,9 @@ func (r *rest) Call(url string, method string, request interface{}, response int
 			glog.V(2).Infof("marhal request failed: %v", err)
 			return err
 		}
-		glog.V(2).Infof("send request to %s: %s", url, string(content))
+		if glog.V(4) {
+			glog.Infof("send request to %s: %s", url, string(content))
+		}
 		body = bytes.NewBuffer(content)
 	}
 	req, err := http.NewRequest(method, url, body)
@@ -72,6 +74,6 @@ func (r *rest) Call(url string, method string, request interface{}, response int
 			return err
 		}
 	}
-	glog.V(2).Infof("rest call successful")
+	glog.V(4).Infof("rest call successful")
 	return nil
 }

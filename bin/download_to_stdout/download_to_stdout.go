@@ -47,7 +47,7 @@ func do(writer io.Writer, input io.Reader) error {
 }
 
 func downloadLink(writer io.Writer, url string) error {
-	glog.V(2).Infof("download %s started", url)
+	glog.V(4).Infof("download %s started", url)
 	response, err := http.Get(url)
 	if err != nil {
 		return err
@@ -57,12 +57,14 @@ func downloadLink(writer io.Writer, url string) error {
 		if err != nil {
 			return err
 		}
-		glog.V(2).Infof("%s", string(content))
+		if glog.V(4) {
+			glog.Infof("%s", string(content))
+		}
 		return errors.New(string(content))
 	}
 	if _, err := io.Copy(writer, response.Body); err != nil {
 		return err
 	}
-	glog.V(2).Infof("download %s finished", url)
+	glog.V(4).Infof("download %s finished", url)
 	return nil
 }
