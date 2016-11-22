@@ -72,7 +72,7 @@ func (b *httpClientBuilder) BuildDialFunc() DialFunc {
 }
 
 func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
-	if glog.V(4) {
+	if glog.V(5) {
 		glog.Infof("build http transport")
 	}
 	return &http.Transport{
@@ -84,7 +84,7 @@ func (b *httpClientBuilder) BuildRoundTripper() http.RoundTripper {
 }
 
 func (b *httpClientBuilder) Build() *http.Client {
-	if glog.V(4) {
+	if glog.V(5) {
 		glog.Infof("build http client")
 	}
 	return &http.Client{
