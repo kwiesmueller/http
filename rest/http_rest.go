@@ -9,8 +9,9 @@ import (
 
 	"io"
 
-	"github.com/golang/glog"
 	"net/url"
+
+	"github.com/golang/glog"
 )
 
 type executeRequest func(req *http.Request) (resp *http.Response, err error)
