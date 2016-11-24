@@ -10,6 +10,7 @@ import (
 	"io"
 
 	"github.com/golang/glog"
+	"net/url"
 )
 
 type executeRequest func(req *http.Request) (resp *http.Response, err error)
@@ -19,7 +20,7 @@ type rest struct {
 }
 
 type Rest interface {
-	Call(url string, method string, request interface{}, response interface{}, header http.Header) error
+	Call(url string, values url.Values, method string, request interface{}, response interface{}, headers http.Header) error
 }
 
 func New(
@@ -30,7 +31,10 @@ func New(
 	return r
 }
 
-func (r *rest) Call(url string, method string, request interface{}, response interface{}, headers http.Header) error {
+func (r *rest) Call(url string, values url.Values, method string, request interface{}, response interface{}, headers http.Header) error {
+	if values != nil {
+		url = fmt.Sprintf("%s?%s", url, values.Encode())
+	}
 	glog.V(4).Infof("call %s on path %s", method, url)
 	start := time.Now()
 	defer glog.V(4).Infof("create completed in %dms", time.Now().Sub(start)/time.Millisecond)
