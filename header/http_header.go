@@ -13,6 +13,7 @@ func CreateAuthorizationToken(name string, value string) string {
 	glog.V(4).Infof("create bearer")
 	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", name, value)))
 }
+
 func CreateAuthorizationTokenSimple(name string) string {
 	glog.V(4).Infof("create simple bearer")
 	return base64.StdEncoding.EncodeToString([]byte(name))
