@@ -3,6 +3,7 @@ package requestbuilder
 import (
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type HttpRequestBuilder interface {
@@ -96,9 +97,9 @@ func (r *httpRequestBuilder) getUrlWithParameter() string {
 			} else {
 				result += "&"
 			}
-			result += key
+			result += url.QueryEscape(key)
 			result += "="
-			result += value
+			result += url.QueryEscape(value)
 		}
 	}
 	return result

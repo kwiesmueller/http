@@ -96,3 +96,24 @@ func TestSetBody(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestAddParameter(t *testing.T) {
+	r := NewHTTPRequestBuilder("http://www.benjamin-borbe.de").AddParameter("a", "b")
+	request, err := r.Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(string(request.URL.String()), Is("http://www.benjamin-borbe.de?a=b")); err != nil {
+		t.Fatal(err)
+	}
+}
+func TestAddParameterEscape(t *testing.T) {
+	r := NewHTTPRequestBuilder("http://www.benjamin-borbe.de").AddParameter("message", "Hello World")
+	request, err := r.Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = AssertThat(string(request.URL.String()), Is("http://www.benjamin-borbe.de?message=Hello+World")); err != nil {
+		t.Fatal(err)
+	}
+}
