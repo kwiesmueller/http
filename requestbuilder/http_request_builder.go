@@ -64,7 +64,7 @@ func (r *httpRequestBuilder) SetContentLength(contentLength int64) HttpRequestBu
 }
 
 func (r *httpRequestBuilder) AddHeader(key string, value string) HttpRequestBuilder {
-	r.header.Set(key, value)
+	r.header.Add(key, value)
 	return r
 }
 
