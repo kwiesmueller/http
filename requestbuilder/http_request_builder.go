@@ -8,7 +8,7 @@ import (
 
 type HttpRequestBuilder interface {
 	AddParameter(key string, values ...string) HttpRequestBuilder
-	AddHeader(key string, value ...string) HttpRequestBuilder
+	AddHeader(key string, values ...string) HttpRequestBuilder
 	SetMethod(key string) HttpRequestBuilder
 	SetBody(reader io.Reader) HttpRequestBuilder
 	AddBasicAuth(username, password string) HttpRequestBuilder
