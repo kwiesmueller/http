@@ -63,7 +63,7 @@ func (r *httpRequestBuilder) SetContentLength(contentLength int64) HttpRequestBu
 	return r
 }
 
-func (r *httpRequestBuilder) AddHeader(key string, value ...string) HttpRequestBuilder {
+func (r *httpRequestBuilder) AddHeader(key string, values ...string) HttpRequestBuilder {
 	for _, v := range value {
 		r.header.Add(key, v)
 	}
