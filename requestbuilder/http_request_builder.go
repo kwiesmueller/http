@@ -7,7 +7,7 @@ import (
 )
 
 type HttpRequestBuilder interface {
-	AddParameter(key string, value ...string) HttpRequestBuilder
+	AddParameter(key string, values ...string) HttpRequestBuilder
 	AddHeader(key string, value ...string) HttpRequestBuilder
 	SetMethod(key string) HttpRequestBuilder
 	SetBody(reader io.Reader) HttpRequestBuilder
