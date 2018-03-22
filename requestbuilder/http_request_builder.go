@@ -8,7 +8,7 @@ import (
 
 type HttpRequestBuilder interface {
 	AddParameter(key string, value ...string) HttpRequestBuilder
-	AddHeader(key string, value string) HttpRequestBuilder
+	AddHeader(key string, value ...string) HttpRequestBuilder
 	SetMethod(key string) HttpRequestBuilder
 	SetBody(reader io.Reader) HttpRequestBuilder
 	AddBasicAuth(username, password string) HttpRequestBuilder
@@ -63,8 +63,10 @@ func (r *httpRequestBuilder) SetContentLength(contentLength int64) HttpRequestBu
 	return r
 }
 
-func (r *httpRequestBuilder) AddHeader(key string, value string) HttpRequestBuilder {
-	r.header.Add(key, value)
+func (r *httpRequestBuilder) AddHeader(key string, value ...string) HttpRequestBuilder {
+	for _, v := range value {
+		r.header.Add(key, v)
+	}
 	return r
 }
 
